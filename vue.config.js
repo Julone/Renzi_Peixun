@@ -1,9 +1,6 @@
 const path = require('path');
 const globalLessVariables = path.resolve(__dirname, './global.variables.less');
-var px2rem = require('postcss-px2rem');
-var postcss = px2rem({
-  remUnit: 42,
-})
+
 module.exports = {
     publicPath: './',
     filenameHashing: true,
@@ -21,7 +18,9 @@ module.exports = {
         },
         postcss: {
           plugins: [
-            postcss
+            require('postcss-px2rem')({
+              remUnit: 42,
+            })
           ]
         }
       }
