@@ -24,8 +24,6 @@ export default {
   mounted(){
     console.log(this.$mapActions);
     console.log(this.$store.getters.test);
-
-
   }
 }
 </script>
