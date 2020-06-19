@@ -5,6 +5,7 @@ import store from './store'
 import './global/components'
 import './utils/flexible.js'
 import './vant.js'
+Vue.prototype.$eventBus = new Vue();
 
 new Vue({
   router,

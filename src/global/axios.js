@@ -1,9 +1,9 @@
 import NProgress from 'nprogress'; // progress bar
 import 'nprogress/nprogress.css';
-import axios from "axios";
+import Axios from "axios";
 import store from "@/store";
 import { Toast } from 'vant';
-var axiosIns = new axios({
+var axiosIns =  Axios.create({
     timeout:6000,
     withCredentials:true,
     validateStatus: function (status) {
@@ -45,5 +45,24 @@ axiosIns.interceptors.response.use(res => {
   NProgress.done();
   return Promise.reject(new Error(error))
 })
+var axiosByFormData = (params) => {
+  var data = Object.keys(params.data).reduce((t,el) => {
+    var value = params.data[el];
+    if({}.toString.call(value) === '[object Object]'){
+      value = JSON.stringify(value)
+    }
+    t.push(el + "=" + value);
+    return t;
+  },[]).join('&')
+  var config = {
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    data
+  }
+  return axiosIns(Object.assign(params,config))
+}
+
 
 export default axiosIns;
+export {
+  axiosByFormData
+}

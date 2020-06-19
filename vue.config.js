@@ -1,5 +1,8 @@
 const path = require('path');
 const globalLessVariables = path.resolve(__dirname, './global.variables.less');
+function resolve(dir){
+  return path.join(__dirname,dir)
+}
 
 module.exports = {
     publicPath: './',
@@ -8,6 +11,13 @@ module.exports = {
     productionSourceMap: false,
     configureWebpack: config => {
         process.env.NODE_ENV === 'development' && (config.devtool = 'source-map');
+        
+        
+    },
+    chainWebpack:config =>{
+          config.resolve.alias
+          .set('api', resolve('src/global/api.js'))
+          
     },
     css: {
       loaderOptions: {
@@ -19,7 +29,7 @@ module.exports = {
         postcss: {
           plugins: [
             require('postcss-px2rem')({
-              remUnit: 42,
+              remUnit: 37.5,
             })
           ]
         }
@@ -28,12 +38,19 @@ module.exports = {
     devServer: {
         port: 8080,
         proxy: {
-            '^/api': {
-                target: 'http://tm.lilanz.com/',
+            '^/api1': {
+                target: 'http://192.168.36.171:8080/',
                 changeOrigin: true,
                 pathRewrite: {
-                    '^/api': ''
+                    '^/api1': ''
                 }
+            },
+            '^/api2': {
+              target: 'http://192.168.36.125:8080/',
+              changeOrigin: true,
+              pathRewrite: {
+                  '^/api2': ''
+              }
             }
         }
     }

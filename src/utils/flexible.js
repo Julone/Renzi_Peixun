@@ -69,7 +69,7 @@
     function refreshRem(){
         var width = docEl.getBoundingClientRect().width;
         if (width / dpr > 540) {
-            width = width * dpr;
+            width = 540  * dpr;
         }
         var rem = width / 10;
         docEl.style.fontSize = rem + 'px';
@@ -88,10 +88,10 @@
     }, false);
 
     if (doc.readyState === 'complete') {
-        doc.body.style.fontSize = 12 * dpr + 'px';
+        doc.body.style.fontSize = 16 * dpr + 'px';
     } else {
         doc.addEventListener('DOMContentLoaded', function(e) {
-            doc.body.style.fontSize = 12 * dpr + 'px';
+            doc.body.style.fontSize = 16 * dpr + 'px';
         }, false);
     }
 
