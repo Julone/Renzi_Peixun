@@ -1,6 +1,6 @@
    <template #label>
        <p>
-           {{el.id}}: {{el.tmName}}
+           {{el.tmSort}}: {{el.tmName}}
            <span>({{el.tmfz}}分)</span>
        </p>
    </template>

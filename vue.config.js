@@ -28,8 +28,12 @@ module.exports = {
         },
         postcss: {
           plugins: [
-            require('postcss-px2rem')({
-              remUnit: 37.5,
+            require('postcss-pxtorem')({
+              // remUnit: 37.5, 这个是postcss-px2rem
+              rootValue: 36, // 换算的基数(设计图750的根字体为32)
+                        selectorBlackList: [],// 要忽略的选择器并保留为px。
+                        propList: ["*"], //可以从px更改为rem的属性。
+                        minPixelValue: 1 // 设置要替换的最小像素值。
             })
           ]
         }

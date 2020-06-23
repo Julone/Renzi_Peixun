@@ -4,7 +4,7 @@ import Axios from "axios";
 import store from "@/store";
 import { Toast } from 'vant';
 var axiosIns =  Axios.create({
-    timeout:6000,
+    timeout:10000,
     withCredentials:true,
     validateStatus: function (status) {
         return status >= 200 && status <= 500

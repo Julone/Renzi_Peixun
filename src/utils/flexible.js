@@ -7,6 +7,7 @@
     var dpr = 0;
     var scale = 0;
     var tid;
+    var bodyFontSize = 16;
     var flexible = lib.flexible || (lib.flexible = {});
 
     if (metaEl) {
@@ -69,7 +70,7 @@
     function refreshRem(){
         var width = docEl.getBoundingClientRect().width;
         if (width / dpr > 540) {
-            width = 540  * dpr;
+            width = 540 * dpr;
         }
         var rem = width / 10;
         docEl.style.fontSize = rem + 'px';
@@ -88,10 +89,10 @@
     }, false);
 
     if (doc.readyState === 'complete') {
-        doc.body.style.fontSize = 16 * dpr + 'px';
+        doc.body.style.fontSize = bodyFontSize * dpr + 'px';
     } else {
         doc.addEventListener('DOMContentLoaded', function(e) {
-            doc.body.style.fontSize = 16 * dpr + 'px';
+            doc.body.style.fontSize = bodyFontSize * dpr + 'px';
         }, false);
     }
 

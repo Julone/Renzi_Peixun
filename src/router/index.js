@@ -20,14 +20,23 @@ const routes = [
         props: true
       },
       {
-        path: '/test',
+        path: '/test/:paper_id',
         name: 'test_page',
-        component: ()=>import('../views/Test.vue')
+        component: ()=>import('../views/Test.vue'),
+        props: true
       },
       {
         path: '/study_progress',
         name: 'study_progress',
         component: ()=>import('../views/Progress.vue'),
+        meta: {
+          openTabbar:true
+        }
+      },
+      {
+        path: '/score',
+        name: 'score',
+        component: ()=>import('../views/Score.vue'),
         meta: {
           openTabbar:true
         }
@@ -46,19 +55,6 @@ const routes = [
 const router = new VueRouter({
   mode: 'hash',
   routes,
-  scrollBehavior (to, from, savedPosition) {
-    // console.log(savedPosition);
-    // if (savedPosition) {
-    //     return savedPosition
-    // }   else {
-    //     if (from.meta.keepAlive) {
-    //       console.log(document.querySelector('.app-container').scrollTop);
-    //         from.meta.savedPosition = document.body.scrollTop;
-    //     }
-    //     return { x: 0, y: to.meta.savedPosition || 0 }
-    // }
-  },
-
 })
 
 export default router
