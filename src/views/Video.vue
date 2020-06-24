@@ -5,7 +5,7 @@
         <van-nav-bar style="width:100%" title="培训考试" left-text="返回" left-arrow @click-left="onClickLeft">
         </van-nav-bar>
         <div class="video_container">
-            <video ref="video" :key="video_url" :src="video_url"
+            <video ref="video" :key="video_id" :src="video_url"
                 poster="https://cdn4.buysellads.net/uu/1/3386/1525189943-38523.png" autoplay controls width="100%"
                 x5-playsinline playsinline webkit-playsinline></video>
         </div>
@@ -33,8 +33,8 @@
                                 <div align="center" v-if="ele.videos.length == 0"> 暂无视频 </div>
                                 <div v-else v-for="(v,index) in ele.videos" @click="playVideo(v,ele)" :key="index">
                                     <van-cell :title="v.video_name" clickable
-                                        :label="v.video_url == video_url? '正在播放中': ''">
-                                        <van-icon name="play-circle-o" v-if="v.video_url != video_url" />
+                                        :label="v.id == video_id? '正在播放中': ''">
+                                        <van-icon name="play-circle-o" v-if="v.id != video_id" />
                                         <van-icon name="pause-circle-o" v-else />
                                     </van-cell>
                                 </div>
@@ -59,7 +59,7 @@
                                             </div>
                                         </div>
                                       
-                                        <div class="content">
+                                        <div class="content"  @click="openDialog({parentId: el.id,parentUserName: el.userName})">
                                             {{el.content}}
                                         </div>
                                     </div>
@@ -80,7 +80,7 @@
                                             {{ele.createAt}}
                                         </div>
                                        </div>
-                                        <div class="content">
+                                        <div class="content" @click="openDialog({parentId: el.id,parentUserName: ele.userName})">
                                             {{ele.content}}
                                         </div>
                                     </div>
@@ -146,12 +146,12 @@
                 courseInfo: {},
                 video_url: '',
                 video_name: '',
+                video_id:0,
                 activeTab: 'info',
                 showReply: false,
                 commentList: [],
                 courseId: 0,
                 chapterId: 0,
-                videoId: 0,
                 commentLoading: false,
                 parentId: null,
                 parentUserName: null,
@@ -193,28 +193,28 @@
                     this.getCommentList();
                 })
             },
+            startInterval(){
+                return setInterval(()=>{
+                     var p = getStorage({name: 'video_max_percent'});
+                     console.log('progres' + p);
+                     this.saveProgress(p);
+                },5 * 1000)
+            },
             async playVideo(v, c) {
-                console.log(v);
-                var {
-                    video_url,
-                    video_name
-                } = v;
-                this.video_url = video_url;
-                this.video_name = video_name;
-                v.isPlaying = true;
+                var _this = this
+                this.video_url = v.video_url;
+                this.video_name = v.video_name;
                 this.chapterId = c.id;
-                this.videoId = v.id
+                this.video_id = v.id;
+                v.isPlaying = true;
+                clearInterval(this.progressTimer)
                 await this.$nextTick();
                 var video = this.$refs.video;
                  setStorage({
                     name: 'video_max_percent',
                     content: 0
                 })
-                this.progressTimer= setInterval(()=>{
-                     var p = getStorage({name: 'video_max_percent'});
-                     console.log('progres' + p);
-                     this.saveProgress(p);
-                },10 * 1000)
+                this.progressTimer= this.startInterval();
                 video.addEventListener('timeupdate', function () {
                     var time = video.currentTime;
                     v.progress = time / video.duration * 100;
@@ -225,10 +225,9 @@
                         })
                     }
                 }, false)
-                var _this = this
                 video.addEventListener('ended', function ad() {
                     _this.saveProgress();
-                    clearInterval(this.progressTimer)
+                    clearInterval(_this.progressTimer)
                     // video.removeEventListener('ended', ad,false);    
                 }, false)
 
@@ -238,7 +237,7 @@
                 video_saveVideoProgress({
                     courseId: _this.courseId,
                     chapterId: _this.chapterId,
-                    videoId: _this.videoId,
+                    videoId: _this.video_id,
                     progress: progress
                 }).then(r => {
                     console.log(r);
@@ -266,22 +265,9 @@
                     el.progress = 0;
                     return el;
                 });
-                var {
-                    course_name,
-                    id,
-                    info,
-                    paper_id,
-                    teacher
-                } = r.data;
+                var { course_name, id, info, course_id, paper_id, teacher } = r.data.courseInfo;
                 this.courseId = id
-                this.$set(this.$data, 'courseInfo', {
-                    course_name,
-                    id,
-                    info,
-                    paper_id,
-                    teacher,
-                    course_rate: 5
-                })
+                this.$set(this.$data, 'courseInfo', { course_name, id, info, paper_id, teacher, course_rate: 5 })
             })
         },
         beforeDestroy(){

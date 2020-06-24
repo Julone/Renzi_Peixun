@@ -8,13 +8,14 @@
     </transition>
     <van-tabbar safe-area-inset-bottom v-if="$route.meta.openTabbar"  placeholder route v-model="activeTabbar" >
       <van-tabbar-item name="/" :to="{path:'/'}" icon="home-o">首页</van-tabbar-item>
-      <van-tabbar-item name="/1" :to="{path:'/study_progress'}" icon="underway-o">进度</van-tabbar-item>
+      <van-tabbar-item name="/1" :to="{path:'/progress'}" icon="underway-o">进度</van-tabbar-item>
       <van-tabbar-item name="/2" :to="{path:'/score'}" icon="award-o">成绩</van-tabbar-item>
-      <van-tabbar-item name="/3" :to="{path:'/c'}" icon="setting-o">标签4</van-tabbar-item>
+      <van-tabbar-item name="/3" :to="{path:'/setting'}" icon="setting-o">设置</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
 <script>
+
 export default {
   data(){
     return {
@@ -30,9 +31,11 @@ export default {
       })
     }
   },
+
   mounted(){
     this.$eventBus.$on('triggerScroll',this.triggerScroll )
-  }
+  },
+  
 }
 </script>
 
@@ -41,6 +44,8 @@ export default {
 *{
   // border: 1px solid red;
   // box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 body{
     // padding-bottom: constant(safe-area-inset-bottom);

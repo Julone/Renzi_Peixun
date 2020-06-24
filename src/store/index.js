@@ -1,11 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import home from './module/home'
-import {mapState,mapMutations,mapGetters,mapActions} from 'vuex';
-Vue.prototype.$mapState = mapState;
-Vue.prototype.$mapMutations = mapMutations;
-Vue.prototype.$mapGetters = mapGetters;
-Vue.prototype.$mapActions = mapActions;
+import home from './module/home';
+import login from './module/login';
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -26,9 +22,14 @@ export default new Vuex.Store({
   getters: {
     test(){
       return 1
+    },
+    apptoken(state){
+      console.log(state);
+      return state.login.apptoken
     }
   },
   modules: {
-    home
+    home,
+    login
   }
 })

@@ -8,9 +8,7 @@
         <van-divider></van-divider>
         <van-cell v-for="el in courseList" :key="el.id" :title="el.teacher + '-' + el.course_name" :label="el.info"
           is-link @click="$router.push({name: 'video', params: {v_id: el.id} })">
-          <div>
-            <img v-lazy="el.image" width="160" alt="">
-          </div>
+            <img v-lazy="el.image" width="100%" alt="">
         </van-cell>
 
       </van-list>

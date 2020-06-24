@@ -19,9 +19,10 @@ axiosIns.interceptors.request.use(config => {
   NProgress.remove();
   let { showProgress = true} = config.headers;
   showProgress && NProgress.start() // start progress bar
-  let token = store.getters.token;
+  let token = store.getters.apptoken;
+  console.log(token);
   if (token) {
-    config.headers['Authorization'] = token // token
+    config.headers['Authorization'] = 'Bearer ' + token // token
   }
   return config
 }, error => {

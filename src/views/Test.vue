@@ -68,6 +68,26 @@
                                 <test-qt :el="el" slot="label"></test-qt>
                             </van-field>
                         </div>
+                        <div class="form-item" v-if="el.tmType== 'P'">
+                            <!-- 对错题 -->
+                            <van-field :name="'checkbox'+el.id" :rules="[{ required: true, message: '请勾选你的选项' }]">
+                                <test-qt :el="el" slot="label"></test-qt>
+                                <template #input>
+                                    <van-checkbox-group v-model="el.answer">
+                                        <van-cell-group>
+                                            <van-cell v-for="o in el.options" :key="o.id" :title="o.xx+ '.' + o.xxName"
+                                                clickable :border="false"  @click="toggleCheckbox(o.id)">
+                                                <template #right-icon>
+                                                    <van-checkbox ref="checkbox" 
+                                                     :o_id="o.id" style="margin-bottom:5px"
+                                                        :name="o.xx"></van-checkbox>
+                                                </template>
+                                            </van-cell>
+                                        </van-cell-group>
+                                    </van-checkbox-group>
+                                </template>
+                            </van-field>
+                        </div>
                     </div>
                 </div>
 
@@ -204,7 +224,7 @@
                     this.$toast('时间到, 已无法修改考卷!');
                     clearInterval(this.clocker)
                 }
-            }, 100)
+            }, 1000)
         },
         beforeDestroy() {
             clearInterval(this.clocker)
@@ -216,7 +236,7 @@
         scroll-behavior: smooth;
         .block(){
              width: 90%;
-                margin: 0 auto;
+            margin: 0 auto;
         }
         .header{
             .sj_title{
@@ -261,9 +281,9 @@
         .form-item>.van-cell {
             flex-direction: column;
             background: transparent;
-            box-shadow: 0px 14px 12px 0px #e0e0e0;
+            box-shadow: 0px 14px 12px 0px #ebebeb;
             margin-bottom: 30px;
-            border-radius: 10px;
+            border-radius: 5px;
             border: 1px solid rgba(128, 128, 128, 0.25);
             // padding: 5px 5px;
             // margin-top: 10px;;

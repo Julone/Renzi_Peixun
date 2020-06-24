@@ -1,16 +1,29 @@
 import axios, {axiosByFormData} from './axios';
-var baseUrl = process.env.NODE_ENV =='development'? '/api1': './'
+var baseUrl = process.env.NODE_ENV =='development'? '/api1': './';
+export function login_requestToken({userName = 'panhq', password= 'phq'}){
+    return axiosByFormData({
+        url: baseUrl + '/login',
+        method: 'POST',
+        data: {
+            data:{ 
+                userName, password
+            }
+        }
+    })
+}
 export function home_getCourseList(){
     return axios({
         url: baseUrl + '/px/getCourseList'
     })
 }
 export function home_getCourseDetail(courseId){
-    return axios({
+    return axiosByFormData({
         url: baseUrl + '/px/getCourseById',
         method: 'POST',
-        params: {
-            courseId
+        data: {
+            data:{
+                videoId: courseId
+            }
         }
     })
 }
@@ -39,17 +52,18 @@ export function progress_getUserStudyProgress(userId){
     return axios({
         url: baseUrl + '/px/getLearnRecord',
         method: 'POST',
-        params: {
-            userId
-        }
+        // params: {
+        //     userId
+        // }
     })
 }
 export function video_saveVideoProgress({courseId,chapterId,videoId,progress}){
+
     return axiosByFormData({
         url: baseUrl + '/px/setProgress',
         method:'POST',
         data: {
-            data:  {"userId":1,"userName":"phq", courseId,chapterId,videoId,"videoProgress":progress}
+            data:  {courseId,chapterId,videoId,"videoProgress":Math.round(progress)}
         }
     })
 }
@@ -59,7 +73,7 @@ export function video_getCommentById(courseId){
         url: baseUrl + "/comment/getCommentByCourseId",
         method: 'POST',
         params: {
-            courseId
+            data:{ courseId}
         },
     })
 }
@@ -74,7 +88,13 @@ export function video_addCommentByInfo({courseId, parentId, parentUserName, cont
     })
 }
 
-export function score_getScoreList({}){
-
+export function score_getScoreList(){
+    return axiosByFormData({
+        url: baseUrl + "/exam/getAllAnswerByUserId",
+        method: 'POST',
+        data: {
+            data: {"userId":1}
+       }
+    })
     
 }
