@@ -1,41 +1,50 @@
 <template>
-    <div class="VIDEO_MODULE">
-        <van-sticky>
-
-        <van-nav-bar style="width:100%" title="培训考试" left-text="返回" left-arrow @click-left="onClickLeft">
-        </van-nav-bar>
-        <div class="video_container">
-            <video ref="video" :key="video_id" :src="video_url"
-                poster="https://cdn4.buysellads.net/uu/1/3386/1525189943-38523.png" autoplay controls width="100%"
-                x5-playsinline playsinline webkit-playsinline></video>
+    <div class="VIDEO-PAGE NO_PADDING">
+        <div class="top">
+            <van-nav-bar style="width:100%" :title="courseInfo.course_name" left-text="返回" left-arrow
+                @click-left="onClickLeft">
+            </van-nav-bar>
+            <div class="video_container">
+                <video ref="video" :key="video_id" :src="video_url" :poster="video_poster" autoplay controls
+                    width="100%" x5-playsinline playsinline webkit-playsinline></video>
+            </div>
         </div>
-        </van-sticky>
-
 
         <div class="main">
-            <van-tabs ref="vanTab" scrollspy  @change="tabChange" animated :offset-top="350" v-model="activeTab" color="rgb(25,137,250)">
+            <van-tabs ref="vanTab" scrollspy @change="tabChange" animated :offset-top="350" v-model="activeTab"
+                color="rgb(25,137,250)">
                 <van-tab name="info" title="课程信息">
                     <div class="course_info">
-                        <h1>课程名称: {{courseInfo.course_name}}
-                            <van-button type="info" :to="{name: 'test_page', params: {paper_id: courseInfo.paper_id}}">前往考试</van-button>
-                        </h1>
-                        <div>
-                            评分:
+                        <!-- {{courseInfo}} -->
+                        <van-cell :label="courseInfo.info">
+                            <b slot="title" style="font-size:2em;line-height:2.2em">
+                                {{courseInfo.course_name || "课程名称"}}
+                            </b>
+                        </van-cell>
+                        <van-cell title="课程老师">
+                            {{courseInfo.teacher}}
+                        </van-cell>
+                        <van-cell title="课程评分">
                             <van-rate v-model="courseInfo.course_rate" />
-                        </div>
+                        </van-cell>
+                        <van-cell title="课程考试"
+                            v-bind='courseInfo.paper != -1 ? { "is-link":true ,to: { name: "test_page", params: {paper_id: courseInfo.paper_id} } }: null'>
+                            <span v-if="courseInfo.paper == -1" @click.stop>该课程已考过</span>
+                            <span v-else style="color:#1989fa">前往考试</span>
+                        </van-cell>
                     </div>
                 </van-tab>
                 <van-tab name="video" title="视频列表">
                     <div class="chapters-list">
-                        <van-collapse v-model="activeNames">
+                        <van-collapse v-model="activeVideo">
                             <van-collapse-item :name="ele.id" :title="ele.chapter_name" v-for="ele in chapters"
                                 :key="ele.id">
                                 <div align="center" v-if="ele.videos.length == 0"> 暂无视频 </div>
                                 <div v-else v-for="(v,index) in ele.videos" @click="playVideo(v,ele)" :key="index">
-                                    <van-cell :title="v.video_name" clickable
-                                        :label="v.id == video_id? '正在播放中': ''">
-                                        <van-icon name="play-circle-o" v-if="v.id != video_id" />
-                                        <van-icon name="pause-circle-o" v-else />
+                                    <van-cell :title="v.video_name" clickable :label="v.id == video_id? '点击开始学习': ''"
+                                        icon-prefix="play-circle-o"
+                                        :title-style="{color: v.id == video_id? '#1989fa' : ''}">
+                                        <!-- <van-icon name="play-circle-o" /> -->
                                     </van-cell>
                                 </div>
                             </van-collapse-item>
@@ -58,8 +67,9 @@
                                                 {{el.createAt}}
                                             </div>
                                         </div>
-                                      
-                                        <div class="content"  @click="openDialog({parentId: el.id,parentUserName: el.userName})">
+
+                                        <div class="content"
+                                            @click="openDialog({parentId: el.id,parentUserName: el.userName})">
                                             {{el.content}}
                                         </div>
                                     </div>
@@ -72,15 +82,16 @@
                                 <van-swipe-cell v-for="(ele,index) in el.children"
                                     v-show="el.expandAll? true :index < 3" :key="index">
                                     <div class="comment-item childNode">
-                                       <div class="title">
+                                        <div class="title">
                                             <div class="left">
-                                            {{ele.userName}} 回复了 {{ele.parentUserName}}
+                                                {{ele.userName}} 回复了 {{ele.parentUserName}}
+                                            </div>
+                                            <div class="right">
+                                                {{ele.createAt}}
+                                            </div>
                                         </div>
-                                        <div class="right">
-                                            {{ele.createAt}}
-                                        </div>
-                                       </div>
-                                        <div class="content" @click="openDialog({parentId: el.id,parentUserName: ele.userName})">
+                                        <div class="content"
+                                            @click="openDialog({parentId: el.id,parentUserName: ele.userName})">
                                             {{ele.content}}
                                         </div>
                                     </div>
@@ -99,12 +110,12 @@
                             </div>
                             <van-divider>没有更多了</van-divider>
                         </van-list>
-                        <van-popup v-model="showReply" get-container="body" closeable round position="bottom"
-                         :style="{ height: '35vh' }">
-                            <div style="padding:10px;margin-top:40px;">
-                                {{parentId}} {{parentUserName}}
+                        <van-popup v-model="showReply" transition="van-slide-up" get-container="body"
+                            safe-area-inset-bottom position="bottom" close-on-popstate :style="{ height: '30vh'}"
+                            @closed="$eventBus.$emit('triggerScroll', {})">
+                            <div style="padding:10px;margin-top:5px;">
                                 <van-field v-model="commentContent" rows="3" type="textarea" maxlength="100"
-                                    placeholder="请输入评论" show-word-limit autofocus clickable/>
+                                    :placeholder="ReplyPlaceholder" show-word-limit autofocus clickable />
                                 <van-button type="info" block @click="submitComment">评论</van-button>
                             </div>
                         </van-popup>
@@ -118,11 +129,11 @@
 <script>
     import {
         home_getCourseList,
-        home_getCourseDetail,
+        video_getCourseDetail,
         video_getCommentById,
         video_saveVideoProgress,
         video_addCommentByInfo
-    } from '@/global/api'
+    } from 'api'
     import Vue from 'vue';
     import {
         Swipe,
@@ -141,13 +152,14 @@
     export default {
         data() {
             return {
-                activeNames: [],
+                activeVideo: [],
                 chapters: [],
                 courseInfo: {},
                 video_url: '',
                 video_name: '',
-                video_id:0,
-                activeTab: 'info',
+                video_poster: '',
+                video_id: 0,
+                activeTab: '',
                 showReply: false,
                 commentList: [],
                 courseId: 0,
@@ -155,13 +167,18 @@
                 commentLoading: false,
                 parentId: null,
                 parentUserName: null,
-                commentContent: ''
+                commentContent: '',
+                curVideoInfo: {},
             }
         },
-        props: ['v_id'],
+        props: ['v_id', 'c_id', 'k_id'],
+        computed: {
+            ReplyPlaceholder() {
+                return this.parentUserName ? '回复' + this.parentUserName + ': ' : '我要评论'
+            }
+        },
         methods: {
-            tabChange(){
-           },
+            tabChange() {},
             onClickLeft() {
                 this.$router.push('/')
             },
@@ -174,63 +191,80 @@
                 this.parentUserName = parentUserName;
             },
             submitComment() {
-                var l = this.$toast.loading()
+                if (this.commentContent.trimEnd() == "") {
+                    return this.$toast('请输入评论内容!');
+                }
+                var l = this.$toast.loading();
                 return video_addCommentByInfo({
                     parentId: this.parentId,
                     parentUserName: this.parentUserName,
                     content: this.commentContent,
-                    courseId: this.v_id
+                    courseId: this.k_id
                 }).then(r => {
-                    r.errcode == 0 ? this.$toast.success(r.errmsg) : this.$toast.fail(r.errmsg)
                     l.close();
-                }).catch(e => {
-                    this.$toast.fail(e)
-                }).finally(() => {
-                    this.parentId = '';
-                    this.parentUserName = '';
+                    r.errcode == 0 ? this.$toast.success(r.errmsg) : this.$toast.fail(r.errmsg)
                     this.commentContent = "";
+                }).catch(e => {
+                    this.$toast.fail('评论发送失败!')
+                }).finally(() => {
                     this.showReply = false;
                     this.getCommentList();
+
                 })
             },
-            startInterval(){
-                return setInterval(()=>{
-                     var p = getStorage({name: 'video_max_percent'});
-                     console.log('progres' + p);
-                     this.saveProgress(p);
-                },5 * 1000)
+            startInterval() {
+                return setInterval(() => {
+                    var p = getStorage({
+                        name: 'video_max_percent'
+                    });
+                    console.log('progres' + p);
+                    this.saveProgress(p);
+                }, 5 * 1000)
             },
             async playVideo(v, c) {
+                //onchange
+                if (this.v_id != v.id) { //点击视频与现在视频不一样
+                    this.saveProgress(getStorage({
+                        name: 'video_max_percent'
+                    }));
+                    this.$router.push({
+                        name: 'videoByVideoId',
+                        params: {
+                            v_id: v.id,
+                            c_id: c.id
+                        }
+                    });
+                }
                 var _this = this
                 this.video_url = v.video_url;
                 this.video_name = v.video_name;
                 this.chapterId = c.id;
                 this.video_id = v.id;
-                v.isPlaying = true;
                 clearInterval(this.progressTimer)
                 await this.$nextTick();
                 var video = this.$refs.video;
-                 setStorage({
+                video.play()
+                setStorage({
                     name: 'video_max_percent',
                     content: 0
                 })
-                this.progressTimer= this.startInterval();
+                this.progressTimer = this.startInterval();
                 video.addEventListener('timeupdate', function () {
                     var time = video.currentTime;
                     v.progress = time / video.duration * 100;
-                    if(v.progress > getStorage({name: 'video_max_percent'})){
+                    if (v.progress > getStorage({
+                            name: 'video_max_percent'
+                        })) {
                         setStorage({
                             name: 'video_max_percent',
                             content: time / video.duration * 100
                         })
                     }
                 }, false)
-                video.addEventListener('ended', function ad() {
-                    _this.saveProgress();
-                    clearInterval(_this.progressTimer)
-                    // video.removeEventListener('ended', ad,false);    
+                video.addEventListener('ended', function () {
+                    _this.saveProgress(100);
+                    clearInterval(_this.progressTimer);
                 }, false)
-
             },
             saveProgress(progress = 100) {
                 var _this = this
@@ -244,7 +278,7 @@
                 })
             },
             getCommentList() {
-                return video_getCommentById(this.v_id).then(r => {
+                return video_getCommentById(this.k_id).then(r => {
                     this.commentList = r.data.map(function mapChildren(el) {
                         el.createAt = timeAgo(el.createAt);
                         el.expandAll = false;
@@ -258,27 +292,46 @@
             }
         },
         created() {
-            this.getCommentList()
-            home_getCourseDetail(this.v_id).then(r => {
+            this.getCommentList();
+            video_getCourseDetail({
+                c_id: this.k_id,
+                v_id: this.v_id
+            }).then(r => {
                 this.chapters = r.data.chapters.map(el => {
-                    el.isPlaying = false;
                     el.progress = 0;
                     return el;
                 });
-                var { course_name, id, info, course_id, paper_id, teacher } = r.data.courseInfo;
-                this.courseId = id
-                this.$set(this.$data, 'courseInfo', { course_name, id, info, paper_id, teacher, course_rate: 5 })
+                var courseInfo = r.data.courseInfo;
+                let curVideoInfo = r.data.curVideoInfo;
+                this.courseId = courseInfo.id;
+                if (this.v_id) {
+                    this.activeTab = "video";
+                    this.activeVideo = [curVideoInfo.chapter_id];
+                    this.video_id = curVideoInfo.id;
+                    // this.video_url = curVideoInfo.video_url;
+                    this.video_poster = curVideoInfo.image;
+                }
+                this.$set(this.$data, 'courseInfo', {
+                    ...courseInfo,
+                    course_rate: 5
+                });
+                this.$set(this.$data, 'curVideoInfo', {
+                    ...curVideoInfo
+                });
+
             })
         },
-        beforeDestroy(){
+        beforeDestroy() {
             clearInterval(this.progressTimer)
         }
     }
 </script>
 <style lang="less">
-    .VIDEO_MODULE {
+    .VIDEO-PAGE {
+
         .flex(@d: column; @j: flex-start; @a: stretch);
         .wh100();
+        // min-height: 100% !important;
 
         .video_container {
             // position: sticky;
@@ -297,11 +350,15 @@
             }
         }
 
+        .top {
+            flex: none;
+        }
+
         .main {
             flex: 1;
             width: 100%;
             overflow: auto;
-            height: 300px;
+            // height: 300px;
 
             .van-tabs {
 
@@ -323,11 +380,12 @@
                 .van-tabs__content {
                     overflow-y: auto;
                     // min-height: 300px;
-                    padding: 10px 5px;
+                    padding: 0px 5px 0;
                     flex: 1;
                     align-self: stretch;
                     box-sizing: border-box;
                     overflow-x: hidden;
+
                     .van-tab__pane-wrapper {
                         overflow-y: auto;
                     }
@@ -362,7 +420,7 @@
             .sendCommentBtn {
                 box-shadow: none;
                 width: 90%;
-                margin: 0 auto;
+                margin: 10px auto 0;
                 // background: rgb(91, 91, 91);
                 height: 40px;
                 .flex();
@@ -374,9 +432,10 @@
                 // padding: 0 4px;
                 // border: 1px solid red;
                 width: 90%;
-                border-radius: 3px;
-                margin: 10px auto 30px;
-                border: 1px solid #1989fa40;
+                // border-radius: 3px;
+                margin: 15px auto 20px;
+                border: 1px solid rgba(128, 128, 128, 0.333);
+                // border-left: 5px solid #6799cc;
 
                 // border: 1px solid gray;
                 .van-swipe-cell {
@@ -401,61 +460,57 @@
                 }
 
                 .comment-item {
-                
+
                     .title {
-                        font-size: .8em;
+                        font-size: .7em;
                         .flex(@j: space-between);
-                        
+                           color: rgb(98, 98, 98);
                         .left {
                             word-break: break-all;
                             text-transform: uppercase;
                         }
-
                         .right {
                             flex: none;
                             align-self: stretch;
                         }
-
-                     
-
                     }
-                       .content {
-                           margin-top: 5px;
-                           width: 100%;
-                           word-break: break-word;
-                           text-align: justify;
-                           font-size: .9em;
-                        //    white-space: pre-wrap;
 
-                       }
-                        padding: 9px;;
-
-
+                    .content {
+                        margin: 5px auto 2px;
+                        width: 100%;
+                        word-break: break-word;
+                        text-align: justify;
+                        font-size: .9em;
+                        line-height: 1.4em;
+                        &:active{
+                            background:rgba(128, 128, 128, 0.1);
+                        }
+                    }
+                    padding: 9px;
                     margin: 0 auto;
-                    // border:1px solid gray;
                     height: auto;
-                    ;
-
-
-
                     &.parentNode {
+                border-left: 5px solid #6799cc;
+
                         // border-left: 3px solid rgb(59, 108, 253);
                         // background: rgb(226, 226, 226);
-
                     }
 
                     &.childNode {
-                        padding-left: 20px;
-                        &::before{
-                            content: '';
-                            width: 10px;
-                            height: 10px;
-                            background: rgb(230, 230, 230);
-                            display: block;
-                            position: absolute;
-                            left: 2px;
-                            border-radius: 10px;
-                        }
+                        // padding-left: 20px;
+                        border-left: 5px solid #67cc99;
+                        // margin-left: 5px;;
+                        // &::before {
+                        //     content: '';
+                        //     width: 10px;
+                        //     height: 10px;
+                        //     background: rgb(230, 230, 230);
+                        //     display: block;
+                        //     position: absolute;
+                        //     left: 2px;
+                        //     border-radius: 10px;
+                        // }
+
                         // border-left: px solid rgb(90, 92, 99);
                     }
                 }

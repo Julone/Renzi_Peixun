@@ -1,27 +1,32 @@
 <template>
-    <div class="TEST_MODULE">
+    <div class="TEST-PAGE MODULE">
         <van-sticky>
             <van-nav-bar title="培训考试" left-text="返回" left-arrow @click-left="onClickLeft" @click-right="onClickRight">
                 <template #right>
                     <van-circle v-if="leftRate" size="30" v-model="leftRate" stroke-width="60" :speed="100"
-                        layer-color="#e6e6e6" :text="leftTime + ''" />
+                        layer-color="#e6e6e6">
+                        <div style="line-height:30px;">
+                            {{leftTime / 60 || 0 | toFixed}}
+                        </div>
+                    </van-circle>
                 </template>
             </van-nav-bar>
         </van-sticky>
         <div class="content">
             <van-form ref="form" :scrollToError="false" @submit="onSubmit" @failed="onFailed">
                 <div class="header">
-                    <h1 class="sj_title" >{{sj_info.sub_title || '试卷标题'}}</h1>
+                    <h1 class="sj_title">{{sj_info.sub_title || '试卷标题'}}</h1>
                     <div class="sj_info">
                         <!-- <div>试卷名称: {{sj_info.title}}</div> -->
-                        <span>考试时间: {{leftTime || 0}}/{{sj_info.t_time || 0}}秒</span>
+                        <span>考试时间: {{leftTime / 60 || 0 | toFixed}}/{{sj_info.t_time || 0}}分</span>
                         <span>总分: {{sj_info.t_fenshu || 100}}</span>
                     </div>
                 </div>
 
                 <van-divider></van-divider>
                 <div class="question-list">
-                    <div class="question" @click="questionClick" :class="{disabled: disabledSubmit}" v-for="el in tm_list" :key="el.id">
+                    <div class="question" @click="questionClick" :class="{disabled: disabledSubmit}"
+                        v-for="el in tm_list" :key="el.id">
                         <div class="form-item" v-if="el.tmType == 'X'">
                             <van-field :name="'radio'+el.id" :rules="[{ required: true, message: '请勾选你的选项' }]">
                                 <test-qt :el="el" slot="label"></test-qt>
@@ -49,10 +54,9 @@
                                     <van-checkbox-group v-model="el.answer">
                                         <van-cell-group>
                                             <van-cell v-for="o in el.options" :key="o.id" :title="o.xx+ '.' + o.xxName"
-                                                clickable :border="false"  @click="toggleCheckbox(o.id)">
+                                                clickable :border="false" @click="toggleCheckbox(o.id)">
                                                 <template #right-icon>
-                                                    <van-checkbox ref="checkbox" 
-                                                     :o_id="o.id" style="margin-bottom:5px"
+                                                    <van-checkbox ref="checkbox" :o_id="o.id" style="margin-bottom:5px"
                                                         :name="o.xx"></van-checkbox>
                                                 </template>
                                             </van-cell>
@@ -73,18 +77,17 @@
                             <van-field :name="'checkbox'+el.id" :rules="[{ required: true, message: '请勾选你的选项' }]">
                                 <test-qt :el="el" slot="label"></test-qt>
                                 <template #input>
-                                    <van-checkbox-group v-model="el.answer">
-                                        <van-cell-group>
-                                            <van-cell v-for="o in el.options" :key="o.id" :title="o.xx+ '.' + o.xxName"
-                                                clickable :border="false"  @click="toggleCheckbox(o.id)">
-                                                <template #right-icon>
-                                                    <van-checkbox ref="checkbox" 
-                                                     :o_id="o.id" style="margin-bottom:5px"
-                                                        :name="o.xx"></van-checkbox>
-                                                </template>
-                                            </van-cell>
-                                        </van-cell-group>
-                                    </van-checkbox-group>
+                                    <van-radio-group v-model="el.answer">
+                                        <van-cell>
+                                            <template #title>
+                                                <van-radio ref="checkbox" style="margin-bottom:5px" name="T">
+                                                    对
+                                                </van-radio>
+                                            </template>
+                                            <van-radio ref="checkbox" style="margin-bottom:5px" name="F">
+                                                错</van-radio>
+                                        </van-cell>
+                                    </van-radio-group>
                                 </template>
                             </van-field>
                         </div>
@@ -92,8 +95,8 @@
                 </div>
 
                 <div class="submit">
-                    <van-button block  style="padding:0 20px" native-type="submit" size="medium"
-                        color="rgb(7,193,96)"> 提交考卷 </van-button>
+                    <van-button block style="padding:0 20px" native-type="submit" size="medium" color="rgb(7,193,96)">
+                        提交考卷 </van-button>
                 </div>
             </van-form>
 
@@ -106,7 +109,7 @@
     import {
         test_getTestPage,
         test_setTestPageAnswer
-    } from '@/global/api';
+    } from 'api';
     import {
         dateFormat
     } from './../utils/utils.js'
@@ -133,7 +136,7 @@
                     message: '你已答题的内容将无法保存,需要重新答题!'
                 }).then(res => {
                     this.$router.go(-1)
-                }).catch(e=>e)
+                }).catch(e => e)
             },
             onClickRight() {
                 this.$toast(`考试时间: ${this.leftTime}/${this.sj_info.t_time} 秒`)
@@ -148,29 +151,28 @@
                 return [...val.replace(/[^\x00-\xff]/g, '**')].length < 200
             },
             checkFormData() {
-              
-                    var tm_list = [];
-                    this.tm_list.forEach(el => {
-                        var tm_answer = el.tmType == 'D' ? el.answer.join(',') : el.answer;
-                        tm_list.push({
-                            tm_id: el.id,
-                            tm_answer,
-                            tm_name: el.tmName,
-                            tm_type: el.tmType == 'X' ? '选择' : el.tmType == 'D' ? '多选' : '简答'
-                        })
-                    });
-                    return({
-                        userName: 'zxc',
-                        userId: 1,
-                        sjName: this.sj_info.sub_title,
-                        sjId: this.sj_info.id,
-                        endTime: dateFormat(new Date(), 'yyyy-MM-dd hh:mm:ss'),
-                        startTime: this.startTime,
-                        answerList: tm_list
+                var tm_list = [];
+                this.tm_list.forEach(el => {
+                    var tm_answer = el.tmType == 'D' ? el.answer.join(',') : el.answer;
+                    tm_list.push({
+                        tm_id: el.id,
+                        tm_answer,
+                        tm_name: el.tmName,
+                        tm_type: el.tmTypeLabel
                     })
+                });
+                return ({
+                    userName: 'zxc',
+                    userId: 1,
+                    sjName: this.sj_info.sub_title,
+                    sjId: this.sj_info.id,
+                    endTime: dateFormat(new Date(), 'yyyy-MM-dd hh:mm:ss'),
+                    startTime: this.startTime,
+                    answerList: tm_list
+                })
             },
             onFailed(e) {
-                if(this.disabledSubmit) {
+                if (this.disabledSubmit) {
                     this.$refs.form.resetValidation();
                     return this.onSubmit();
                 }
@@ -182,22 +184,27 @@
             },
 
             async onSubmit() {
+                this.$toast.loading('正在提交...');
                 var data = this.checkFormData();
                 return test_setTestPageAnswer(data).then(r => {
-                    var T = this.$toast;
-                    r.errcode == 0 ? T.success(r.errmsg):T.failed(r.errmsg);
-                }).catch(e => {
-                    console.log(e);
+                    this.$toast.success(r.errmsg);
+
+                }).catch(errmsg => {
+                    this.$toast.fail(errmsg)
+                }).finally(()=>{
+                    setTimeout(()=>{
+                        this.$router.go(-1)
+                    }, 1000)
                 })
             },
-            questionClick(){
-                if(this.disabledSubmit) {
+            questionClick() {
+                if (this.disabledSubmit) {
                     this.$toast.fail('时间到, 无法修改')
                 }
             }
         },
         async created() {
-            
+
             var rs = await test_getTestPage(this.paper_id).then(r => {
                 return r.data
             }).catch(e => {
@@ -210,15 +217,17 @@
                 id: rs.id,
                 sub_title: rs.sjName
             })
-            this.tm_list = rs.tms.map((el,index) => {
+            this.tm_list = rs.tms.map((el, index) => {
                 el.answer = el.tmType == 'D' ? [] : "";
-                el.focus = false
+                el.focus = false;
+                el.tmTypeLabel = el.tmType == 'X' ? '选择' : el.tmType == 'D' ? '多选' : el.tmType == 'P'? '判断':'简答'
+                
                 return el
             })
-            this.leftTime = this.sj_info.t_time;
+            this.leftTime = this.sj_info.t_time * 60;
             this.clocker = setInterval(() => {
                 this.leftTime--;
-                this.leftRate = this.leftTime / this.sj_info.t_time * 100;
+                this.leftRate = this.leftTime / (this.sj_info.t_time * 60) * 100;
                 if (this.leftRate <= 0) {
                     this.disabledSubmit = true;
                     this.$toast('时间到, 已无法修改考卷!');
@@ -226,33 +235,41 @@
                 }
             }, 1000)
         },
+        filters: {
+            toFixed(val) {
+                return val.toFixed(0)
+            }
+        },
         beforeDestroy() {
             clearInterval(this.clocker)
         }
     }
 </script>
 <style lang="less">
-    .TEST_MODULE {
+    .TEST-PAGE {
         scroll-behavior: smooth;
-        .block(){
-             width: 90%;
+
+        .block() {
+            width: 90%;
             margin: 0 auto;
         }
-        .header{
-            .sj_title{
-                        font-size: 1.5em;
-                        padding: 0 15px;
-                        text-align: justify;
-                        .flex();
-                    }
-                .sj_info {
-                    .flex();
-                    font-size: .9em;
-                    color: #333;
-                    justify-content: space-around;
-                }
+
+        .header {
+            .sj_title {
+                font-size: 1.5em;
+                padding: 0 15px;
+                text-align: justify;
+                .flex();
+            }
+
+            .sj_info {
+                .flex();
+                font-size: .9em;
+                color: #333;
+                justify-content: space-around;
+            }
         }
-     
+
 
         .submit {
             .block();
@@ -262,7 +279,7 @@
 
         .content {
             .question-list {
-              .block();
+                .block();
             }
         }
 
@@ -273,7 +290,8 @@
 
         .question.disabled {
             filter: grayscale(.5);
-            .van-cell__value{
+
+            .van-cell__value {
                 pointer-events: none;
             }
         }

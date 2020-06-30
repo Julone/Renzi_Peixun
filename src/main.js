@@ -7,7 +7,7 @@ import './utils/flexible.js'
 import './vant.js'
 Vue.prototype.$eventBus = new Vue();
 
-new Vue({
+export default new Vue({
   router,
   store,
   render: h => h(App)

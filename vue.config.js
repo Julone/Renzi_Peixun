@@ -42,11 +42,11 @@ module.exports = {
     devServer: {
         port: 8080,
         proxy: {
-            '^/api1': {
-                target: 'http://192.168.36.171:8080/',
+            '^/phq_api': {
+                target: 'http://192.168.36.171:9878',
                 changeOrigin: true,
                 pathRewrite: {
-                    '^/api1': ''
+                    '^/phq_api': ''
                 }
             },
             '^/api2': {
@@ -55,7 +55,19 @@ module.exports = {
               pathRewrite: {
                   '^/api2': ''
               }
-            }
+            },
+            '^/api_test': {
+              target: 'http://192.168.35.97:9878',
+              changeOrigin: true,
+              pathRewrite: {
+                  '^/api_test': ''
+              }
+            },
+            '^/exec.ashx': {
+              target: 'http://tm.lilanz.com/qywx/webbll/exec.ashx',
+              changeOrigin: true,
+            },
+            
         }
     }
 }

@@ -1,7 +1,9 @@
    <template #label>
        <p>
-           {{el.tmSort}}: {{el.tmName}}
-           <span>({{el.tmfz}}分)</span>
+          <van-tag type="primary">{{el.tmTypeLabel}}</van-tag> {{el.tmSort}}: {{el.tmName}}
+           
+           <span> ( {{el.tmfz}}分 )</span>
+          
        </p>
    </template>
    <script>

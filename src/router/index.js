@@ -14,8 +14,14 @@ const routes = [
     }
   },
   {
-    path: '/video/:v_id',
-    name: 'video',
+    path: '/video/:k_id',
+    name: 'videoByCourseId',
+    component: () => import('../views/Video.vue'),
+    props: true
+  },
+  {
+    path: '/video/:k_id/:c_id/:v_id',
+    name: 'videoByVideoId',
     component: () => import('../views/Video.vue'),
     props: true
   },
@@ -77,8 +83,12 @@ router.beforeEach((to,from,next) => {
     if( to.path == '/login'){
       next()
     }else{
-      next('/login')
-
+      // if(process.env.NODE_ENV == 'development'){
+      //   next();
+      // }else{
+        // next('/login');
+      // }
+      next();
     }
   }
 })

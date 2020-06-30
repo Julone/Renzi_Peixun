@@ -1,15 +1,49 @@
 @import url('~normalize.css');
+h1{
+    font-size: 1.1rem;
+    margin: 20px 5px;
+}
 #nprogress {
     @color: @j_main_color;
     .peg {
         box-shadow: 0 0 10px @color, 0 0 5px darken(@color,20%) !important;
     }
     .bar {
-        background: lighten(@color ,5%)!important;
+        // background: lighten(@color ,5%)!important;
         height: 4px !important;
+        background: linear-gradient(-45deg, #3296fb, #97fff5) !important;
+        
     }
     .spinner-icon{
         border-top-color: @color !important;
         border-left-color:@color !important;
     }
+}
+[bgless]{
+    background: transparent !important;
+}
+[borderless]{
+    border: none !important;
+}
+[paddingless]{
+    padding: 0 !important;
+}
+//VUE 切换
+.fadeApp-enter-active {
+    transition: opacity .4s linear
+}
+
+.fadeApp-leave-active {
+    transition: opacity .3s linear
+}
+
+.fadeApp-enter,
+.fadeApp-leave-to {
+    opacity: 0;
+    filter: grayscale(1);
+}
+
+.fadeApp-enter-to,
+.fadeApp-leave {
+    opacity: 1;
 }

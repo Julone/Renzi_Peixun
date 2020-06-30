@@ -1,5 +1,12 @@
-import axios, {axiosByFormData} from './axios';
-var baseUrl = process.env.NODE_ENV =='development'? '/api1': './';
+import axios, {axiosByFormData,axiosSilent} from './axios';
+import store from './../store';
+
+var baseUrl = process.env.NODE_ENV == 'development'? '/api_test': 'http://192.168.35.97:9878';
+function getToken(){
+    var token = store.getters.apptoken || ""
+    return token;
+}
+
 export function login_requestToken({userName = 'panhq', password= 'phq'}){
     return axiosByFormData({
         url: baseUrl + '/login',
@@ -11,19 +18,28 @@ export function login_requestToken({userName = 'panhq', password= 'phq'}){
         }
     })
 }
+export function login_getToken(){
+    return axiosByFormData({
+        url: baseUrl + '/getToken',
+        method: 'POST',
+        data: {
+            data:{"cid":"15512","cname":"panhq"}
+        }
+    })
+}
 export function home_getCourseList(){
-    return axios({
+    return axiosByFormData({
         url: baseUrl + '/px/getCourseList'
     })
 }
-export function home_getCourseDetail(courseId){
+export function video_getCourseDetail({v_id,c_id}){
+    var data = {};
+    v_id ? data['videoId'] = v_id: data['courseId'] = c_id;
     return axiosByFormData({
         url: baseUrl + '/px/getCourseById',
         method: 'POST',
         data: {
-            data:{
-                videoId: courseId
-            }
+            data
         }
     })
 }
@@ -49,30 +65,30 @@ export function test_setTestPageAnswer(data){
     })
 }
 export function progress_getUserStudyProgress(userId){
-    return axios({
+    return axiosByFormData({
         url: baseUrl + '/px/getLearnRecord',
-        method: 'POST',
-        // params: {
-        //     userId
-        // }
+        method: 'POST'
     })
 }
 export function video_saveVideoProgress({courseId,chapterId,videoId,progress}){
-
-    return axiosByFormData({
+    return axiosSilent({
         url: baseUrl + '/px/setProgress',
         method:'POST',
         data: {
-            data:  {courseId,chapterId,videoId,"videoProgress":Math.round(progress)}
+            data:  {
+                courseId,chapterId,videoId,
+                videoProgress:Math.round(progress),
+                token: getToken()
+            }
         }
     })
 }
 
 export function video_getCommentById(courseId){
-    return axios({
+    return axiosByFormData({
         url: baseUrl + "/comment/getCommentByCourseId",
         method: 'POST',
-        params: {
+        data: {
             data:{ courseId}
         },
     })

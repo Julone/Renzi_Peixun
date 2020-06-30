@@ -1,13 +1,11 @@
 <template>
-    <div class="PROGRESS_MODULE">
+    <div class="PROGRESS-PAGE MODULE">
         <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
             <header>
                 <h1>学习进度</h1>
             </header>
             <main>
-                <van-empty v-if="progressList.length == 0 " description="暂无进度" >
-                    <van-button type="info" round plain :to="{path: '/'}">开始学习</van-button>
-                </van-empty>
+                
                 <van-collapse v-model="activeNames" :border="false">
                     <van-collapse-item size="large" v-for="(el,index1) in progressList" :key="index1" :name="index1">
                         <template #title>
@@ -30,6 +28,10 @@
                         </li>
                     </van-collapse-item>
                 </van-collapse>
+                <van-empty v-if="progressList.length == 0 " description="暂无进度" >
+                    <van-button type="info" round plain :to="{path: '/'}">开始学习</van-button>
+                </van-empty>
+                <van-divider v-else>我是有底线的</van-divider>
             </main>
         </van-pull-refresh>
     </div>
@@ -82,29 +84,24 @@
     }
 </script>
 <style lang="less">
-    .PROGRESS_MODULE {
+    .PROGRESS-PAGE{
+    padding: 5px 10px 0;
         header {
-            width: 94%;
             margin: 0 auto;
         }
 
         main {
-            width: 94%;
             margin: 0 auto;
-            min-height: 500px;;
-
+            // min-height: 70vmax;
             .van-collapse-item__title--expanded {
                 background: #f8f8f8;
             }
-
             .col-title {
                 .flex(@j: space-between);
-
                 &>div {
                     i {
                         margin-right: 5px;
                     }
-
                     .flex();
                 }
             }
