@@ -1,9 +1,10 @@
 <template>
     <div class="SCORE-PAGE MODULE">
-        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+        <van-pull-refresh  success-text="已获取最新成绩" v-model="isLoading" @refresh="onRefresh">
 
             <header>
-                <h1>成绩中心</h1>
+                <app-title>成绩中心</app-title>
+                <!-- <h1 class="page-title">成绩中心</h1> -->
             </header>
             <main class="score-list">
                 

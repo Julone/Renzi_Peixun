@@ -1,5 +1,5 @@
 import {login_requestToken,login_getToken} from 'api';
-import {Notify, Dialog} from 'vant';
+import {Notify, Dialog, Toast} from 'vant';
 import {setStorage,getStorage} from './../../utils/storage';
 import router from '@/router'
 export default {
@@ -9,28 +9,19 @@ export default {
     mutations:{
         login_set_apptoken(state, val){
             state.apptoken = val;
-            setStorage({name: 'apptoken', content: val ,type: 'session'})
+            setStorage({name: 'apptoken', content: val ,type: 'local'})
         }
     },
     actions:{
-        login_requestToken({commit,state}, {userName,password}){
-            return login_requestToken({userName,password}).then(r=>{
-                if(r.errcode == 0) {
-                    commit('login_set_apptoken', r.data.token);
-        
-                    return Promise.resolve(1)
-                }else{
-                   throw new Error(r.errmsg);
-                }
-            }).catch(e=>{
-                Notify('用户登录失败!');
-                return Promise.reject(-1)  
-            })
-        },
         login_getToken({commit}, val) {
-            return login_getToken().then(r=>{
-                commit('login_set_apptoken', r.data);
-            })
+            if(process.env.NODE_ENV == 'development'){
+                return login_getToken().then(r=>{
+                    commit('login_set_apptoken', r.data);
+                    Toast.success('获取Token成功!')
+                })
+            }else{
+                window.location.href= `./login2.aspx?gotourl=${location.href}`;
+            }
         },
         login_logout({commit, state}) {
            return Dialog.confirm({
@@ -43,6 +34,11 @@ export default {
               }).catch(() => {
                   return -1;
               });
+        },
+    },
+    getters:{
+        apptoken(state){
+            return state.apptoken
         }
     }
 }

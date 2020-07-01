@@ -139,7 +139,23 @@
                 }).catch(e => e)
             },
             onClickRight() {
-                this.$toast(`考试时间: ${this.leftTime}/${this.sj_info.t_time} 秒`)
+                var second = 5;
+                var leftRate = function (){
+                    return (100 - this.leftTime / (this.sj_info.t_time * 60) * 100).toFixed(3)
+                }.bind(this)
+                var toast = this.$toast({
+                    duration: 5000,
+                    icon:'underway-o',
+                    message:`考试时间进度: ${ leftRate()} %`
+                });
+                var timer = setInterval(() => {
+                    second--;
+                    if (second) {
+                        toast.message = `考试时间进度: ${ leftRate()} %`
+                    } else {
+                        clearInterval(timer);
+                    }
+                }, 1000);
             },
             toggleRadio(id) {
                 this.$refs.radio.filter(el => el.$attrs.o_id == id)[0].toggle();

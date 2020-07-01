@@ -2,12 +2,12 @@
   <div class="HOME-PAGE MODULE">
     <van-pull-refresh v-model="isLoading" success-text="刷新成功" @refresh="onRefresh">
       <header>
-        <h1>课程中心</h1>
+        <app-title>课程中心</app-title>
+        <!-- <h1 class="page-title">课程中心</h1> -->
       </header>
-      
       <!-- 骨架屏 -->
       <div class="LoadPanel" v-if="isLoading">
-        <van-cell  v-for="el in 2" :key="el">
+        <van-cell  v-for="el in 3" :key="el">
           <template #title> <van-skeleton round  title :row="2" /> </template>
           <van-image width="100%" height="80"></van-image>
         </van-cell>
@@ -18,7 +18,7 @@
         finished-text="没有更多了">
         <van-cell v-bind="{border: index != courseList.length - 1}" v-for="(el,index) in courseList" :key="el.id"
           :title="el.teacher + '-' + el.course_name" :label="el.info" is-link
-          @click="$router.push({name: 'videoByCourseId', params: {k_id: el.id} })">
+          @click="onCourseClick(el)">
           <!-- <img v-lazy="el.image" width="100%" :alt="el.course_name"> -->
           <van-image height="80" width="100%" lazy-load :src="el.image" fit="scale-down">
             <template v-slot:loading>
@@ -44,7 +44,7 @@
     data() {
       return {
         courseList: [],
-        isLoading: false,
+        isLoading: true,
         listLoading: false,
         isFinished: false
       }
@@ -58,7 +58,8 @@
         }).catch(e => {
           this.isLoading = false;
           this.listLoading = false;
-          this.$toast('加载失败')
+          this.isFinished = true;
+          this.$toast('加载失败');
         })
       },
       onRefresh() {
@@ -69,10 +70,16 @@
             this.isLoading = false;
           })
         }, 500)
+      },
+      onCourseClick(el){
+        this.$store.dispatch('home_add_course_record', el)
+        console.log(this.$store.getters.getters_home_course_record);
+        // this.$router.push({name: 'videoByCourseId', params: {k_id: el.id} });
+
       }
     },
-    mounted() {
-      // this.onRefresh();
+    created() {
+      this.onRefresh();
     },
     activated() {
       if (this.$route.meta.keepAlive && this.$route.meta.savedPosition) {

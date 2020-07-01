@@ -1,11 +1,11 @@
 <template>
     <div class="PROGRESS-PAGE MODULE">
-        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+        <van-pull-refresh success-text="已获取最新进度" v-model="isLoading" @refresh="onRefresh">
             <header>
-                <h1>学习进度</h1>
+                <app-title>学习进度</app-title>
+                <!-- <h1 class="page-title">学习进度</h1> -->
             </header>
             <main>
-                
                 <van-collapse v-model="activeNames" :border="false">
                     <van-collapse-item size="large" v-for="(el,index1) in progressList" :key="index1" :name="index1">
                         <template #title>
@@ -70,9 +70,9 @@
             },
             onRefresh(){
                 this.getUserData().then(r=>{
-
+                    
                 }).catch(e=>{
-
+                    this.$toast.fail('刷新失败!')
                 }).finally(()=>{
                     this.isLoading = false
                 })

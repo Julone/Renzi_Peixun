@@ -1,5 +1,6 @@
-export const dateFormat =  function (time ,fmt) { 
-    time = typeof time  == 'string'? new Date(time): time;
+import store from '@/store'
+export const dateFormat = function (time, fmt) {
+    time = typeof time == 'string' ? new Date(time) : time;
     var o = {
         "M+": time.getMonth() + 1, //月份 
         "d+": time.getDate(), //日 
@@ -9,10 +10,10 @@ export const dateFormat =  function (time ,fmt) {
         "q+": Math.floor((time.getMonth() + 3) / 3), // 季度
         "S": time.getMilliseconds() // 毫秒
     };
-    if (/(y+)/.test(fmt)){ 
+    if (/(y+)/.test(fmt)) {
         fmt = fmt.replace(RegExp.$1, (time.getFullYear() + "").substr(4 - RegExp.$1.length));
     }
-    for (var k in o){
+    for (var k in o) {
         if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     }
     return fmt;
@@ -40,4 +41,29 @@ export function timeAgo(time) {
     } else if (seconds >= 0 && seconds < 60) {
         return parseInt(seconds) + "秒前".toString();
     }
+}
+export const axios_dataToFormdata = function dataToFormdata(data = {}) {
+        try {
+            return Object.keys(data).reduce((t, el) => {
+                var value = data[el];
+                if ({}.toString.call(value) === '[object Object]') {
+                    value = JSON.stringify(value)
+                }
+                t.push(el + "=" + value);
+                return t;
+            }, []).join('&')
+        } catch (e) {
+            return ""
+        }
+    }
+export const axios_addToken = function addToken(config) {
+    let token = store.getters.apptoken;
+    if (config.data) {
+        token && (config.data.token = token);
+    } else {
+        config.data = {
+            token: token
+        };
+    }
+    return config
 }

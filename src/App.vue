@@ -1,16 +1,16 @@
 <template>
   <div id="app" :style="{height:appHeight + 'px'}">
     <keep-alive>
-      <router-view v-if="$route.meta.keepAlive"></router-view>
+      <router-view  v-if="$route.meta.keepAlive"></router-view>
     </keep-alive>
     <transition name="van-fade" mode="out-in" >
-      <router-view :appHeight="appHeight" v-if="!$route.meta.keepAlive"></router-view>
+      <router-view :key="refreshToken" :appHeight="appHeight" v-if="!$route.meta.keepAlive"></router-view>
     </transition>
     <van-tabbar safe-area-inset-bottom v-if="$route.meta.openTabbar"  placeholder route v-model="activeTabbar" >
-      <van-tabbar-item  :to="{path:'/'}" icon="home-o">首页</van-tabbar-item>
-      <van-tabbar-item  :to="{path:'/progress'}" icon="underway-o">进度</van-tabbar-item>
-      <van-tabbar-item  :to="{path:'/score'}" icon="award-o">成绩</van-tabbar-item>
-      <van-tabbar-item  :to="{path:'/setting'}" icon="setting-o">设置</van-tabbar-item>
+      <van-tabbar-item :to="{path:'/'}" icon="home-o">首页</van-tabbar-item>
+      <van-tabbar-item :to="{path:'/progress'}" icon="underway-o">进度</van-tabbar-item>
+      <van-tabbar-item :to="{path:'/score'}" icon="award-o">成绩</van-tabbar-item>
+      <van-tabbar-item :to="{path:'/setting'}" icon="setting-o">设置</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
@@ -20,38 +20,35 @@ export default {
   data(){
     return {
       activeTabbar: '',
-      appHeight: 0
+      appHeight: 0,
+      refreshToken: +new Date()
     }
   },
   methods:{
     triggerScroll({x:left,y:top } = {x: 0, y: 0}, smooth){
       console.log('triggerScroll');
       this.$root.$el.scrollTo({ top, left, behavior: smooth? 'smooth':'auto' })
-    }
-  },
-  created(){
-    if(!this.$store.getters.apptoken){
-      if(process.env.NODE_ENV == 'development'){
-        this.$store.dispatch('login_getToken')
-      }else{
-        window.location.href= `./login2.aspx?gotourl=${location.href}`;
-      }
+    },
+    refreshView(){
+      this.refreshToken = +new Date()
+    },
+    getAppHeight(){
+      console.log('app height');
+      this.appHeight = window.innerHeight;
     }
   },
   mounted(){
-    console.log(this.$route);
     this.$eventBus.$on('triggerScroll', this.triggerScroll);
-    this.appHeight = window.innerHeight;
-    window.addEventListener('resize',function(e){
-      console.log('resize');
-      this.appHeight = window.innerHeight;
-    }.bind(this))
+    this.$eventBus.$on('refreshView', this.refreshView);
+    window.addEventListener('load',this.getAppHeight);
+    window.addEventListener('resize',this.getAppHeight);
   }
 }
 </script>
 
 <style lang="less">
 @import url('./App.less');
+
 *{
   // border: 1px solid red;
   // box-sizing: border-box;

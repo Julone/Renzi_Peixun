@@ -3,15 +3,18 @@
         <div class="top">
             <van-nav-bar style="width:100%" :title="courseInfo.course_name" left-text="返回" left-arrow
                 @click-left="onClickLeft">
+                <template #right>
+                    <van-icon @click="$eventBus.$emit('refreshView')" name="replay" size="18"/>
+                </template>   
             </van-nav-bar>
             <div class="video_container">
-                <video ref="video" :key="video_id" :src="video_url" :poster="video_poster" autoplay controls
+                <video ref="video_dom" :key="video_id" :src="video_url" :poster="video_poster" autoplay controls
                     width="100%" x5-playsinline playsinline webkit-playsinline></video>
             </div>
         </div>
 
         <div class="main">
-            <van-tabs ref="vanTab" scrollspy @change="tabChange" animated :offset-top="350" v-model="activeTab"
+            <van-tabs ref="vanTab" scrollspy swipeable @change="tabChange" animated :offset-top="350" v-model="activeTab"
                 color="rgb(25,137,250)">
                 <van-tab name="info" title="课程信息">
                     <div class="course_info">
@@ -37,14 +40,29 @@
                 <van-tab name="video" title="视频列表">
                     <div class="chapters-list">
                         <van-collapse v-model="activeVideo">
-                            <van-collapse-item :name="ele.id" :title="ele.chapter_name" v-for="ele in chapters"
+                            <van-collapse-item :name="ele.id" v-for="ele in chapters"
                                 :key="ele.id">
+                                <template #title>
+                                    <div style="font-size:.6rem;padding-left:5px;">
+                                        {{ele.chapter_name}}
+                                    </div>
+                                </template>
                                 <div align="center" v-if="ele.videos.length == 0"> 暂无视频 </div>
-                                <div v-else v-for="(v,index) in ele.videos" @click="playVideo(v,ele)" :key="index">
-                                    <van-cell :title="v.video_name" clickable :label="v.id == video_id? '点击开始学习': ''"
+                                <div class="video-item" v-else v-for="(v,index) in ele.videos" @click="playVideo(v,ele)" :key="index">
+                                    <van-cell clickable :label="v.id == video_id? '点击开始学习': ''"
                                         icon-prefix="play-circle-o"
                                         :title-style="{color: v.id == video_id? '#1989fa' : ''}">
-                                        <!-- <van-icon name="play-circle-o" /> -->
+                                        <template #title>
+                                            <div class="flexbox">
+                                                <div class="left">
+                                                    <van-icon name="notes-o" />
+                                                    {{v.video_name}}
+                                                </div>
+                                                <div class="right">
+                                                    {{v.video_progress}}%
+                                                </div>
+                                            </div>
+                                        </template>
                                     </van-cell>
                                 </div>
                             </van-collapse-item>
@@ -174,7 +192,7 @@
         props: ['v_id', 'c_id', 'k_id'],
         computed: {
             ReplyPlaceholder() {
-                return this.parentUserName ? '回复' + this.parentUserName + ': ' : '我要评论'
+                return this.parentUserName ? '回复 ' + this.parentUserName + ' ' : '我要评论'
             }
         },
         methods: {
@@ -212,59 +230,111 @@
 
                 })
             },
+         
+            // async playVideo(v, c) {
+            //     //onchange
+            //     console.log(c);
+            //     if (this.v_id != v.id) { //点击视频与现在视频不一样
+            //         this.saveProgress(getStorage({
+            //             name: 'video_max_percent'
+            //         }));
+            //         this.$router.replace({
+            //             name: 'videoByVideoId',
+            //             params: {
+            //                 v_id: v.id,
+            //                 c_id: c.id
+            //             }
+            //         });
+            //         setStorage({
+            //             name: 'video_max_percent',
+            //             content: 0
+            //         })
+            //     }
+            //     var _this = this
+            //     this.video_url = v.video_url;
+            //     this.video_name = v.video_name;
+            //     this.chapterId = c.id;
+            //     this.video_id = v.id;
+            //     clearInterval(this.progressTimer)
+            //     await this.$nextTick();
+            //     var video = this.$refs.video;
+            //     video.play();
+            //     this.progressTimer = this.startInterval();
+            //     video.addEventListener('timeupdate', function () {
+            //         var time = video.currentTime;
+            //         v.progress = Math.round(time / video.duration * 100);
+            //         if (v.video_progress == 100) {
+            //             clearInterval(_this.progressTimer);
+            //         } else {
+            //             setTimeout(() => {
+            //                 if (getStorage({
+            //                         name: 'video_max_percent'
+            //                     }) > v.video_progress) {
+            //                     v.video_progress = getStorage({
+            //                         name: 'video_max_percent'
+            //                     })
+            //                 }
+            //             }, 1000)
+            //         }
+            //         if (v.progress > getStorage({
+            //                 name: 'video_max_percent'
+            //             })) {
+            //             setStorage({
+            //                 name: 'video_max_percent',
+            //                 content: Math.round(time / video.duration * 100)
+            //             })
+            //         }
+            //     }, false)
+            //     video.addEventListener('ended', function () {
+            //         _this.saveProgress(100);
+            //         clearInterval(_this.progressTimer);
+            //     }, false)
+            // },
             startInterval() {
                 return setInterval(() => {
-                    var p = getStorage({
-                        name: 'video_max_percent'
-                    });
-                    console.log('progres' + p);
+                    var p = this.lastVideoProcess;
+                    // console.log('progres' + p);
                     this.saveProgress(p);
                 }, 5 * 1000)
             },
-            async playVideo(v, c) {
+             async playVideo(v, c) {
                 //onchange
-                if (this.v_id != v.id) { //点击视频与现在视频不一样
-                    this.saveProgress(getStorage({
-                        name: 'video_max_percent'
-                    }));
-                    this.$router.push({
-                        name: 'videoByVideoId',
-                        params: {
-                            v_id: v.id,
-                            c_id: c.id
-                        }
-                    });
-                }
-                var _this = this
                 this.video_url = v.video_url;
                 this.video_name = v.video_name;
                 this.chapterId = c.id;
                 this.video_id = v.id;
-                clearInterval(this.progressTimer)
+                if (this.v_id != v.id) { //点击视频与现在视频不一样
+                    this.$router.replace({ name: 'videoByVideoId', params: { v_id: v.id, c_id: c.id } });
+                    this.lastVideoProcess = 0;
+                }
                 await this.$nextTick();
-                var video = this.$refs.video;
-                video.play()
-                setStorage({
-                    name: 'video_max_percent',
-                    content: 0
-                })
-                this.progressTimer = this.startInterval();
-                video.addEventListener('timeupdate', function () {
-                    var time = video.currentTime;
-                    v.progress = time / video.duration * 100;
-                    if (v.progress > getStorage({
-                            name: 'video_max_percent'
-                        })) {
-                        setStorage({
-                            name: 'video_max_percent',
-                            content: time / video.duration * 100
-                        })
+                var videoDOM = this.$refs.video_dom;
+                videoDOM.addEventListener('timeupdate',  () =>  {
+                    var ratio = Math.round( videoDOM.currentTime / videoDOM.duration * 100);
+                    v.progress = isNaN(v.progress)? 0 : ratio;
+                    this.lastVideoProcess = v.progress;
+                    if (v.video_progress == 100) {
+                        clearInterval(this.progressTimer);
+                    } else {
+                        v.video_progress = Math.max(v.video_progress, v.progress);
                     }
                 }, false)
-                video.addEventListener('ended', function () {
-                    _this.saveProgress(100);
-                    clearInterval(_this.progressTimer);
+                videoDOM.addEventListener('ended', () => {
+                    this.saveProgress(100);
+                    clearInterval(this.progressTimer);
                 }, false)
+                videoDOM.addEventListener('pause',()=>{
+                    clearInterval(this.progressTimer);
+                })
+                videoDOM.addEventListener('play',()=>{
+                    clearInterval(this.progressTimer)
+                    this.progressTimer = this.startInterval();
+                    if(v.video_progress > 0 && v.video_progress < 98 && v.isAutoAnchor) {
+                        console.log(v);
+                        videoDOM.currentTime= (isNaN(videoDOM.duration)? 0: videoDOM.duration) * v.video_progress / 100;
+                        v.isAutoAnchor = false;
+                    }
+                })
             },
             saveProgress(progress = 100) {
                 var _this = this
@@ -274,7 +344,7 @@
                     videoId: _this.video_id,
                     progress: progress
                 }).then(r => {
-                    console.log(r);
+                    // console.log(r);
                 })
             },
             getCommentList() {
@@ -289,37 +359,46 @@
                     })
                     this.commentLoading = false;
                 }).catch(e => e)
+            },
+            getVideoInfo() {
+                return video_getCourseDetail({
+                    c_id: this.k_id,
+                    v_id: this.v_id
+                }).then(r => {
+                    this.chapters = r.data.chapters.map(el => {
+                        el.progress = 0;
+                        el.videos.map(v=>{
+                            v.isAutoAnchor = true; //首次自动定位
+                            return v;
+                        })
+                        return el;
+                    });
+                    var courseInfo = r.data.courseInfo;
+                    let curVideoInfo = r.data.curVideoInfo;
+                    this.courseId = courseInfo.id;
+                    if (this.v_id) {
+                        this.activeTab = "video";
+                        this.activeVideo = [curVideoInfo.chapter_id];
+                        this.video_id = curVideoInfo.id;
+                        // this.video_url = curVideoInfo.video_url;
+                        this.video_poster = curVideoInfo.image;
+                    } else {
+                        this.video_poster = courseInfo.image;
+                    }
+                    this.$set(this.$data, 'courseInfo', {
+                        ...courseInfo,
+                        course_rate: 5
+                    });
+                    this.$set(this.$data, 'curVideoInfo', {
+                        ...curVideoInfo
+                    });
+
+                })
             }
         },
         created() {
+            this.getVideoInfo();
             this.getCommentList();
-            video_getCourseDetail({
-                c_id: this.k_id,
-                v_id: this.v_id
-            }).then(r => {
-                this.chapters = r.data.chapters.map(el => {
-                    el.progress = 0;
-                    return el;
-                });
-                var courseInfo = r.data.courseInfo;
-                let curVideoInfo = r.data.curVideoInfo;
-                this.courseId = courseInfo.id;
-                if (this.v_id) {
-                    this.activeTab = "video";
-                    this.activeVideo = [curVideoInfo.chapter_id];
-                    this.video_id = curVideoInfo.id;
-                    // this.video_url = curVideoInfo.video_url;
-                    this.video_poster = curVideoInfo.image;
-                }
-                this.$set(this.$data, 'courseInfo', {
-                    ...courseInfo,
-                    course_rate: 5
-                });
-                this.$set(this.$data, 'curVideoInfo', {
-                    ...curVideoInfo
-                });
-
-            })
         },
         beforeDestroy() {
             clearInterval(this.progressTimer)
@@ -405,10 +484,24 @@
                 flex: 1;
                 width: 100%;
                 overflow-y: auto;
-
+                .video-item{
+                    .van-cell{
+                        padding: 5px;;
+                    }
+                }
                 .van-cell__title {
                     font-size: 20px;
                     letter-spacing: 1px;
+
+                    .flexbox {
+                        font-size: .45rem;
+                        .flex(@j: space-between; @a: flex-start);
+                        .right {
+                            flex: none;
+                            margin-left: 10px;
+                            ;
+                        }
+                    }
                 }
 
                 .van-cell__value {
@@ -464,11 +557,13 @@
                     .title {
                         font-size: .7em;
                         .flex(@j: space-between);
-                           color: rgb(98, 98, 98);
+                        color: rgb(98, 98, 98);
+
                         .left {
                             word-break: break-all;
-                            text-transform: uppercase;
+                            // text-transform: uppercase;
                         }
+
                         .right {
                             flex: none;
                             align-self: stretch;
@@ -482,15 +577,18 @@
                         text-align: justify;
                         font-size: .9em;
                         line-height: 1.4em;
-                        &:active{
-                            background:rgba(128, 128, 128, 0.1);
+
+                        &:active {
+                            background: rgba(128, 128, 128, 0.1);
                         }
                     }
+
                     padding: 9px;
                     margin: 0 auto;
                     height: auto;
+
                     &.parentNode {
-                border-left: 5px solid #6799cc;
+                        border-left: 5px solid #6799cc;
 
                         // border-left: 3px solid rgb(59, 108, 253);
                         // background: rgb(226, 226, 226);

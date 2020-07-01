@@ -1,23 +1,6 @@
-import axios, {axiosByFormData,axiosSilent} from './axios';
-import store from './../store';
-
+import {axiosByFormData,axiosSilent} from './axios';
 var baseUrl = process.env.NODE_ENV == 'development'? '/api_test': 'http://192.168.35.97:9878';
-function getToken(){
-    var token = store.getters.apptoken || ""
-    return token;
-}
 
-export function login_requestToken({userName = 'panhq', password= 'phq'}){
-    return axiosByFormData({
-        url: baseUrl + '/login',
-        method: 'POST',
-        data: {
-            data:{ 
-                userName, password
-            }
-        }
-    })
-}
 export function login_getToken(){
     return axiosByFormData({
         url: baseUrl + '/getToken',
@@ -77,8 +60,7 @@ export function video_saveVideoProgress({courseId,chapterId,videoId,progress}){
         data: {
             data:  {
                 courseId,chapterId,videoId,
-                videoProgress:Math.round(progress),
-                token: getToken()
+                videoProgress:Math.round(progress)
             }
         }
     })
@@ -113,4 +95,10 @@ export function score_getScoreList(){
        }
     })
     
+}
+export function setting_getUserInfo(){
+    return axiosSilent({
+        url: baseUrl + '/getUserMsg',
+        method: 'POST'
+    })
 }

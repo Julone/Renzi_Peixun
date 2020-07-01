@@ -72,24 +72,14 @@ const routes = [
 
 const router = new VueRouter({
   mode: 'hash',
-  routes,
-  
+  routes
 })
 router.beforeEach((to,from,next) => {
-  console.log(to);
   if(store.getters.apptoken) {
     next()
   }else{
-    if( to.path == '/login'){
-      next()
-    }else{
-      // if(process.env.NODE_ENV == 'development'){
-      //   next();
-      // }else{
-        // next('/login');
-      // }
-      next();
-    }
+    store.dispatch('login_getToken')
+    next()
   }
 })
 export default router
