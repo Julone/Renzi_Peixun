@@ -1,5 +1,5 @@
 <template >
-    <svg id="s9" width="100%" height="1.3rem">
+    <svg id="s9" width="100%" :height="rem2px(1.3)">
         <!--渐变对象属于一种特效对象-->
         <defs>
             <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="30%">
@@ -15,19 +15,35 @@
             </linearGradient>
             <!--<radialGradient id="g4">此标签为放射性渐变</radialGradient>-->
         </defs>
-        <circle cx=".3rem" cy=".6rem" r=".25rem"  fill="url(#g3)"/>
+        <circle :cx="rem2px(0.3)" :cy="rem2px(0.6)" :r="rem2px(0.25)"  fill="url(#g3)"/>
         <!-- <rect width="400" height="100" x="50" y="150" fill="url(#g3)"></rect> -->
-        <text  x=".8rem" y="1rem" fill="url(#g3)">
+        <text  :x="rem2px(0.8)" :y="rem2px(1)" fill="url(#g3)">
             <slot></slot>
         </text>
     </svg>
 </template>
 <script>
+import {mapGetters} from 'vuex'
 export default {
-    mounted(){
+    data(){
+        return {
 
+        }
+    },
+    computed:{
+        ...mapGetters({
+            rem: 'htmlFontSize'
+        })
+    },
+    methods: {
+        rem2px(ratio){
+            return ratio * this.rem + 'px';
+        }
+    },
+    mounted(){
+        console.log(this.$store.getters.htmlFontSize);
+        
     }
-    
 }
 </script>
 <style lang="less" scoped>

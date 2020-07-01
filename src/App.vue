@@ -15,14 +15,16 @@
   </div>
 </template>
 <script>
-
+import {mapGetters} from 'vuex'
 export default {
   data(){
     return {
       activeTabbar: '',
-      appHeight: 0,
       refreshToken: +new Date()
     }
+  },
+  computed:{
+    ...mapGetters(['appHeight','htmlFontSize'])
   },
   methods:{
     triggerScroll({x:left,y:top } = {x: 0, y: 0}, smooth){
@@ -32,16 +34,19 @@ export default {
     refreshView(){
       this.refreshToken = +new Date()
     },
-    getAppHeight(){
+    resetAppParams(){
       console.log('app height');
-      this.appHeight = window.innerHeight;
+      this.$store.commit('set_appHeight',window.innerHeight );
+      setTimeout(()=>{
+        this.$store.commit('set_htmlFontSize',parseInt(document.documentElement.style.fontSize) );
+      },310)
     }
   },
   mounted(){
     this.$eventBus.$on('triggerScroll', this.triggerScroll);
     this.$eventBus.$on('refreshView', this.refreshView);
-    window.addEventListener('load',this.getAppHeight);
-    window.addEventListener('resize',this.getAppHeight);
+    window.addEventListener('load',this.resetAppParams);
+    window.addEventListener('resize',this.resetAppParams);
   }
 }
 </script>

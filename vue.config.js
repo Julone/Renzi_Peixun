@@ -16,7 +16,7 @@ module.exports = {
     },
     chainWebpack:config =>{
           config.resolve.alias
-          .set('api', resolve('src/global/api.js'))
+          .set('api', resolve('src/global/api2.js'))
           
     },
     css: {
@@ -64,7 +64,7 @@ module.exports = {
               }
             },
             '^/exec.ashx': {
-              target: 'http://tm.lilanz.com/qywx/webbll/exec.ashx',
+              target: 'http://tm.lilanz.com/qywx/webbll',
               changeOrigin: true,
             },
             

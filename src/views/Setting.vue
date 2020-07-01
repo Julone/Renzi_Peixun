@@ -3,9 +3,23 @@
     <app-title>设置中心</app-title>
     <!-- <h1 class="page-title">设置中心</h1> -->
     <main>
-      <!-- <van-cell title="用户名" @click="$store.dispatch('login_logout')">
-        dfa
-      </van-cell> -->
+      <van-cell class="userInfo-cell" title="用户名">
+        <template #title>
+          <div class="userInfo-container">
+               <div class="userInfo-title">
+              <van-icon size="25" name="https://b.yzcdn.cn/vant/icon-demo-1126.png" />
+              <span style="font-size:20px">
+                {{userName}}
+              </span>
+          </div>
+          
+            <van-button plain type="danger" size="mini" @click="$store.dispatch('login_logout')">注销</van-button>
+     
+          </div>
+       
+        </template>
+        
+      </van-cell>
       <van-cell class="zuijin ">
         <template #title>
           <div class="title">
@@ -28,20 +42,20 @@
               </div>
             </div>
             <div v-else>
-              暂无
+              <van-divider>暂无观看记录</van-divider>
             </div>
           </div>
         </template>
       </van-cell>
-      <van-cell-group title="">
+      <van-cell-group title="  "  :border="false">
         <van-cell title="软件版本">
           {{$store.state.setting.app_version}}
         </van-cell>
         <van-cell title="清除缓存" is-link @click="$store.dispatch('setting_clearCache')">
         </van-cell>
       </van-cell-group>
-      <van-cell title="注销登录" is-link @click="$store.dispatch('login_logout')">
-      </van-cell>
+      <!-- <van-cell title="注销登录" is-link @click="$store.dispatch('login_logout')">
+      </van-cell> -->
     </main>
   </div>
 </template>
@@ -53,6 +67,12 @@
     setting_getUserInfo
   } from 'api'
   export default {
+    data(){
+      return {
+        userName: '',
+        userId: ''
+      }
+    },
     computed: {
       ...mapGetters({
         'course_record': 'getters_home_course_record'
@@ -74,6 +94,10 @@
     },
     created() {
       setting_getUserInfo().then(r => {
+        if(r.errcode == 0) {
+          this.userName = r.data.userName
+          this.userId = r.data.userId
+        }
         console.log(r);
       })
     }
@@ -86,6 +110,23 @@
     // box-sizing: border-box;
     // width: 94%;
     // margin: 0 auto;
+    .userInfo-cell{
+      padding: 10px 5px;
+      margin-bottom: 15px;
+      .userInfo-container{
+        .flex(@j:space-between);
+
+        .userInfo-title{
+        .flex(@j:flex-start);
+
+          span{
+              margin-left: 5px;;
+          }
+        }
+
+      }
+      
+    }
     .zuijin {
       background:#fbfbfb;
       .van-cell__title {
@@ -95,7 +136,8 @@
         }
         .course_container{
           overflow-x: auto;
-          height:90px;
+          // height:90px;
+          height: auto;
           .course_item{
             margin-right:.3rem;width:100px;
             .flex(@d:column;@a:flex-start);

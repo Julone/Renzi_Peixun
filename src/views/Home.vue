@@ -7,7 +7,7 @@
       </header>
       <!-- 骨架屏 -->
       <div class="LoadPanel" v-if="isLoading">
-        <van-cell  v-for="el in 3" :key="el">
+        <van-cell  v-for="el in 3" :key="el" is-link>
           <template #title> <van-skeleton round  title :row="2" /> </template>
           <van-image width="100%" height="80"></van-image>
         </van-cell>
@@ -73,8 +73,7 @@
       },
       onCourseClick(el){
         this.$store.dispatch('home_add_course_record', el)
-        console.log(this.$store.getters.getters_home_course_record);
-        // this.$router.push({name: 'videoByCourseId', params: {k_id: el.id} });
+        this.$router.push({name: 'videoByCourseId', params: {k_id: el.id} });
 
       }
     },

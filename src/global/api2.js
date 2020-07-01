@@ -1,44 +1,43 @@
-import axios, {axiosByFormData} from './axios';
-// var baseUrl = process.env.NODE_ENV =='development'? '/api_test': 'http://192.168.35.97:9878';
-var baseUrl = process.env.NODE_ENV == 'development'? '/exec.ashx': '/exec.ashx'
-export function login_requestToken({userName = 'panhq', password= 'phq'}){
+import {axiosByFormData,axiosSilent} from './axios';
+var baseUrl = process.env.NODE_ENV == 'development'? '/exec.ashx': 'http://tm.lilanz.com/qywx/webbll/exec.ashx';
+
+export function login_getToken(){
     return axiosByFormData({
+        // http://tm.lilanz.com/qywx/webbll/exec.ashx?serviceName=svr-build&action=getCommentByCourseId
         url: baseUrl,
         method: 'POST',
-        params:{
-            action:'login',
-            serviceName: 'svr-build'
+        params: {
+            serviceName: 'svr-build',
+            action: 'getToken'
         },
         data: {
-            data:{ 
-                userName, password
-            }
+            data:{"cid":"15512","cname":"panhq"}
         }
     })
 }
 export function home_getCourseList(){
     return axiosByFormData({
         url: baseUrl,
-        method:'POST',
+        method: 'GET',
         params: {
-            action: 'getCourseList',
-            serviceName: 'svr-build'
-        }
+            serviceName: 'svr-build',
+            action: 'getCourseList'
+        },
     })
 }
-export function home_getCourseDetail(courseId){
+export function video_getCourseDetail({v_id,c_id}){
+    var data = {};
+    v_id ? data['videoId'] = v_id: data['courseId'] = c_id;
     return axiosByFormData({
         url: baseUrl,
-        method: 'POST',  
+        method: 'POST',
         params: {
-            action: 'getCourseById',
-            serviceName: 'svr-build'
+            serviceName: 'svr-build',
+            action: 'getCourseById'
         },
         data: {
-            data:{
-                videoId: courseId
-            }
-        },
+            data
+        }
     })
 }
 export function test_getTestPage(sjid){
@@ -46,8 +45,8 @@ export function test_getTestPage(sjid){
         url: baseUrl,
         method: 'POST',
         params: {
-            action: 'getTestPaperById',
-            serviceName: 'svr-build'
+            serviceName: 'svr-build',
+            action: 'getTestPaperById'
         },
         data: {
             data: {
@@ -60,64 +59,67 @@ export function test_setTestPageAnswer(data){
     return axiosByFormData({
         url: baseUrl,
         method: 'POST',
+        params: {
+            serviceName: 'svr-build',
+            action: 'setUserAnswerInfo'
+        },
         data: {
             data: data
-        },
-        params: {
-            action: 'setUserAnswerInfo',
-            serviceName: 'svr-build'
         }
+        
     })
 }
 export function progress_getUserStudyProgress(userId){
     return axiosByFormData({
-        url: baseUrl,
+        url: baseUrl ,
         method: 'POST',
         params: {
-            action: 'getLearnRecord',
-            serviceName: 'svr-build'
-        }
-
+            serviceName: 'svr-build',
+            action: 'getLearnRecord'
+        },
     })
 }
 export function video_saveVideoProgress({courseId,chapterId,videoId,progress}){
-    return axiosByFormData({
-        url: baseUrl,
+    return axiosSilent({
+        url: baseUrl ,
         method:'POST',
-        data: {
-            data:  {courseId,chapterId,videoId,"videoProgress":Math.round(progress)}
-        },
         params: {
-            clientProgress: false,
-            clientToast: false,
-            action: 'setProgress',
             serviceName: 'svr-build',
+            action: 'setProgress'
+        },
+        data: {
+            data:  {
+                courseId,chapterId,videoId,
+                videoProgress:Math.round(progress)
+            }
         }
     })
 }
 
 export function video_getCommentById(courseId){
     return axiosByFormData({
-        url: baseUrl,
+        url: baseUrl ,
         method: 'POST',
         params: {
-            data:{ courseId},
-            action: 'getCommentByCourseId',
             serviceName: 'svr-build',
+            action: 'getCommentByCourseId'
+        },
+        data: {
+            data:{ courseId}
         },
     })
 }
 
 export function video_addCommentByInfo({courseId, parentId, parentUserName, content}){
     return axiosByFormData({
-        url: baseUrl,
+        url: baseUrl ,
         method: 'POST',
+        params: {
+            serviceName: 'svr-build',
+            action: 'addOneCommentByInfo'
+        },
         data: {
             data: { "userId":2,"userName":"phq", courseId, parentId, parentUserName, content }
-        },
-        params:{
-            action: 'addOneCommentByInfo',
-            serviceName: 'svr-build',
         }
     })
 }
@@ -126,13 +128,23 @@ export function score_getScoreList(){
     return axiosByFormData({
         url: baseUrl,
         method: 'POST',
+        params: {
+            serviceName: 'svr-build',
+            action: 'getAllAnswerByUserId'
+        },
         data: {
             data: {"userId":1}
-       },
-       params:{
-            action: 'getAllAnswerByUserId',
-            serviceName: 'svr-build',
-        }
+       }
     })
     
+}
+export function setting_getUserInfo(){
+    return axiosSilent({
+        url: baseUrl,
+        method: 'POST',
+        params: {
+            serviceName: 'svr-build',
+            action: 'getUserMsg'
+        },
+    })
 }
