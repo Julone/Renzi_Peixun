@@ -1,9 +1,8 @@
 import {axiosByFormData,axiosSilent} from './axios';
 var baseUrl = process.env.NODE_ENV == 'development'? '/exec.ashx': 'http://tm.lilanz.com/qywx/webbll/exec.ashx';
-
+// http://tm.lilanz.com/qywx/webbll/exec.ashx?serviceName=svr-build&action=getCommentByCourseId
 export function login_getToken(){
     return axiosByFormData({
-        // http://tm.lilanz.com/qywx/webbll/exec.ashx?serviceName=svr-build&action=getCommentByCourseId
         url: baseUrl,
         method: 'POST',
         params: {

@@ -3,9 +3,17 @@ import { setStorage, getStorage, clearStorage } from "./../../utils/storage";
 import router from "@/router";
 export default {
   state: {
-    app_version: '20200701'
+    app_version: '20200701',
+    userName: '',
+    userId: '',
+    headImg:getStorage({name: 'headImg'}) || ""
   },
-  mutations: {},
+  mutations: {
+    setting_set_userInfo(state, {userName,userId}){
+      state.userName = userName;
+      state.userId = userId;
+    }
+  },
   actions: {
     setting_clearCache({ commit, state }) {
       return Dialog.confirm({
@@ -25,5 +33,15 @@ export default {
         .catch((e) => e);
     },
   },
-  getters: {},
+  getters: {
+    userName(state){
+      return state.userName
+    },
+    userId(state){
+      return state.userId
+    },
+    headImg(state){
+      return state.headImg
+    }
+  },
 };

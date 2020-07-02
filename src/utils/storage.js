@@ -21,17 +21,28 @@ export function validatenull (val) {
   }
   
 export const setStorage = (params = {}) => {
-  let {
-    name,
-    content,
-    type,
-  } = params;
-  name = keyName + name
+  let { name, content, type, } = params;
+  name = keyName + name;
   let obj = {
     dataType: typeof (content),
     content: content,
     type: type,
     datetime: new Date().getTime()
+  }
+  if(obj.dataType == 'object') {
+    if(content instanceof Map){
+      obj.dataType = 'Map';
+      obj.content = Array.from(obj.content);
+    }else if(content instanceof Set){
+      obj.dataType = 'Set';
+      obj.content = Array.from(obj.content);
+    }else if(content instanceof Date){
+      obj.dataType = 'Date';
+    }else if(content instanceof Array){
+      obj.dataType = 'Array';
+    }
+  }else if(obj.dataType == 'function'){
+    obj.content = String.toString.call(obj.content);
   }
   if (type == 'session') window.sessionStorage.setItem(name, JSON.stringify(obj));
   else window.localStorage.setItem(name, JSON.stringify(obj));
@@ -65,8 +76,20 @@ export const getStorage = (params = {}) => {
     content = Number(obj.content);
   } else if (obj.dataType == 'boolean') {
     content = eval(obj.content);
+  } else if(obj.dataType == 'Array'){
+    content = obj.content
+  } else if(obj.dataType == 'Set'){
+    content = new Set(obj.content);
+  } else if(obj.dataType == 'Map'){
+    content = new Map(obj.content);
+  } else if(obj.dataType == 'Date'){
+    content = new Date(obj.content);
   } else if (obj.dataType == 'object') {
     content = obj.content;
+  } else if(obj.dataType == 'function'){
+    content = new Function('return '+ obj.content).call(null);
+  }else {
+    content = obj.content
   }
   return content;
 }
@@ -85,9 +108,7 @@ var removeStorage = (params = {}) => {
   } else {
     window.localStorage.removeItem(name);
   }
-
 }
-
 /**
  * 获取全部localStorage
  */
@@ -129,5 +150,4 @@ export const clearStorage = (params = {}) => {
   } else {
     window.localStorage.clear()
   }
-
 }

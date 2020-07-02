@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import 'vant/lib/icon/local.css';
 import {
     Toast, Dialog, Divider, CheckboxGroup, Checkbox, Radio, RadioGroup, Field,
     Button, Cell, CellGroup, Circle, Icon,Sticky, Form, Tag, PullRefresh, List,

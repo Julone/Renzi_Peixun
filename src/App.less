@@ -14,6 +14,19 @@ h1{
 .van-nav-bar__left{
     padding: 0 10px !important;
 }
+.rotate360{
+    &:hover{
+        animation: rota ease .4s forwards;
+    }
+    @keyframes rota {
+        from{
+            transform: rotate(0deg);
+        }
+        to{
+            transform: rotate(360deg);
+        }
+    }
+}
 #nprogress {
     @color: @j_main_color;
     .peg {
@@ -41,17 +54,17 @@ h1{
 }
 //VUE 切换
 .fadeApp-enter-active {
-    transition: opacity .4s linear
+    transition: opacity .4s linear;
 }
 
 .fadeApp-leave-active {
-    transition: opacity .3s linear
+    transition: opacity .4s linear;
 }
 
 .fadeApp-enter,
 .fadeApp-leave-to {
     opacity: 0;
-    filter: grayscale(1);
+    filter: grayscale(.6);
 }
 
 .fadeApp-enter-to,

@@ -26,12 +26,13 @@
     import {
         score_getScoreList
     } from 'api'
+    import  {getStorage,setStorage} from './../utils/storage'
     export default {
         data() {
             return {
                 scoreList: [],
                 isLoading: false,
-
+                jj: getStorage({name: 'm'})
             }
         },
         methods: {
@@ -51,6 +52,8 @@
                 })
             },
             initPage() {
+                setStorage({name: 'm',content: new Date()})
+                console.log( getStorage({name: 'm'}).getTime() );
                 this.onLoad();
             }
         },

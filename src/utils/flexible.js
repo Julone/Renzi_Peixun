@@ -1,4 +1,4 @@
-
+import store from '@/store'
 ;(function(win, lib) {
     var doc = win.document;
     var docEl = doc.documentElement;
@@ -75,6 +75,7 @@
         var rem = width / 10;
         docEl.style.fontSize = rem + 'px';
         flexible.rem = win.rem = rem;
+        store.commit('set_htmlFontSize',flexible.rem );
     }
 
     win.addEventListener('resize', function() {

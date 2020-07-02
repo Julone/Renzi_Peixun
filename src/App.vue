@@ -1,10 +1,10 @@
 <template>
   <div id="app" :style="{height:appHeight + 'px'}">
     <keep-alive>
-      <router-view  v-if="$route.meta.keepAlive"></router-view>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
     </keep-alive>
-    <transition name="van-fade" mode="out-in" >
-      <router-view :key="refreshToken" :appHeight="appHeight" v-if="!$route.meta.keepAlive"></router-view>
+    <transition name="fadeApp" mode="out-in" >
+      <router-view :key="refreshToken" v-if="!$route.meta.keepAlive"></router-view>
     </transition>
     <van-tabbar safe-area-inset-bottom v-if="$route.meta.openTabbar"  placeholder route v-model="activeTabbar" >
       <van-tabbar-item :to="{path:'/'}" icon="home-o">首页</van-tabbar-item>
@@ -31,15 +31,14 @@ export default {
       console.log('triggerScroll');
       this.$root.$el.scrollTo({ top, left, behavior: smooth? 'smooth':'auto' })
     },
-    refreshView(){
-      this.refreshToken = +new Date()
+    refreshView(timeout = 0){
+      console.log('refreshView', timeout);
+      setTimeout(() =>{
+        this.refreshToken = +new Date()
+      }, timeout)
     },
     resetAppParams(){
-      console.log('app height');
       this.$store.commit('set_appHeight',window.innerHeight );
-      setTimeout(()=>{
-        this.$store.commit('set_htmlFontSize',parseInt(document.documentElement.style.fontSize) );
-      },310)
     }
   },
   mounted(){

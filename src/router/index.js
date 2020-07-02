@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
+import {addScript} from './../utils/utils'
 Vue.use(VueRouter);
 
 const routes = [
@@ -71,15 +72,23 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'hash',
+  // mode: process.env.VUE_APP_ROUTER_MODE,
+  mode: 'history',
   routes
 })
 router.beforeEach((to,from,next) => {
   if(store.getters.apptoken) {
     next()
   }else{
-    store.dispatch('login_getToken')
     next()
+  }
+})
+router.afterEach((to,from) => {
+  if(to.query && to.query.hasOwnProperty('debug')){
+    console.log('vConsole Start');
+    addScript('https://cdn.bootcdn.net/ajax/libs/vConsole/3.3.4/vconsole.min.js', () => {
+      window.VConsole && new window.VConsole();
+    })
   }
 })
 export default router

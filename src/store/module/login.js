@@ -30,7 +30,8 @@ export default {
                 confirmButtonColor: '#f54c4c'
               }).then(() => {
                     commit('login_set_apptoken', '');
-                    router.push('/login')
+                    commit('setting_set_userInfo', {userName:'',userId: ''})
+                    // router.push('/login')
               }).catch(() => {
                   return -1;
               });

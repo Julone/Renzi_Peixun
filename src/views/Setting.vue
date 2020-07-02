@@ -9,12 +9,12 @@
                <div class="userInfo-title">
               <van-icon size="25" name="https://b.yzcdn.cn/vant/icon-demo-1126.png" />
               <span style="font-size:20px">
-                {{userName}}
+                {{userName || '未登录'}}
               </span>
           </div>
           
-            <van-button plain type="danger" size="mini" @click="$store.dispatch('login_logout')">注销</van-button>
-     
+            <van-button v-if="userId" plain type="danger" size="mini" @click="$store.dispatch('login_logout')">注销</van-button>
+            <van-button v-else plain type="info" size="mini" @click="onLoginClick">登录</van-button>
           </div>
        
         </template>
@@ -67,15 +67,13 @@
     setting_getUserInfo
   } from 'api'
   export default {
-    data(){
-      return {
-        userName: '',
-        userId: ''
-      }
-    },
+  
     computed: {
       ...mapGetters({
-        'course_record': 'getters_home_course_record'
+        'course_record': 'getters_home_course_record',
+        "userName":"userName",
+        "userId":"userId",
+        "headImg": "headImg"
       })
     },
     methods: {
@@ -88,18 +86,30 @@
             k_id: el.id
           }
         });
+      },
+      onLoginClick(){
+        this.$store.dispatch('login_getToken').then(r=>{
+          this.getUserInfo();
+        })
+        
+      },
+      getUserInfo(){
+        return setting_getUserInfo().then(r => {
+            if(r.errcode == 0) {
+              this.$store.commit('setting_set_userInfo', {
+                userName: r.data.userName,
+                userId: r.data.userId
+              })
+            }
+            console.log(r);
+          })
       }
 
 
     },
     created() {
-      setting_getUserInfo().then(r => {
-        if(r.errcode == 0) {
-          this.userName = r.data.userName
-          this.userId = r.data.userId
-        }
-        console.log(r);
-      })
+      this.getUserInfo();
+      
     }
   }
 </script>

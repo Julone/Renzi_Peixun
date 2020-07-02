@@ -4,7 +4,7 @@
             <van-nav-bar style="width:100%" :title="courseInfo.course_name" left-text="返回" left-arrow
                 @click-left="onClickLeft">
                 <template #right>
-                    <van-icon @click="$eventBus.$emit('refreshView')" name="replay" size="18"/>
+                    <van-icon class="rotate360" @click="$eventBus.$emit('refreshView',400)" name="replay" size=".5rem"/>
                 </template>   
             </van-nav-bar>
             <div class="video_container">
@@ -85,7 +85,6 @@
                                                 {{el.createAt}}
                                             </div>
                                         </div>
-
                                         <div class="content"
                                             @click="openDialog({parentId: el.id,parentUserName: el.userName})">
                                             {{el.content}}
