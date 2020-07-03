@@ -132,7 +132,7 @@
                             @closed="$eventBus.$emit('triggerScroll', {})">
                             <div style="padding:10px;margin-top:5px;">
                                 <van-field v-model="commentContent" rows="3" type="textarea" maxlength="100"
-                                    :placeholder="ReplyPlaceholder" show-word-limit autofocus clickable />
+                                    :placeholder="ReplyPlaceholder" show-word-limit clickable />
                                 <van-button type="info" block @click="submitComment">评论</van-button>
                             </div>
                         </van-popup>
@@ -221,6 +221,8 @@
                     l.close();
                     r.errcode == 0 ? this.$toast.success(r.errmsg) : this.$toast.fail(r.errmsg)
                     this.commentContent = "";
+                    var obj = this.commentList.find(el => el.id == ths.parentId);
+                    
                 }).catch(e => {
                     this.$toast.fail('评论发送失败!')
                 }).finally(() => {
@@ -229,66 +231,6 @@
 
                 })
             },
-         
-            // async playVideo(v, c) {
-            //     //onchange
-            //     console.log(c);
-            //     if (this.v_id != v.id) { //点击视频与现在视频不一样
-            //         this.saveProgress(getStorage({
-            //             name: 'video_max_percent'
-            //         }));
-            //         this.$router.replace({
-            //             name: 'videoByVideoId',
-            //             params: {
-            //                 v_id: v.id,
-            //                 c_id: c.id
-            //             }
-            //         });
-            //         setStorage({
-            //             name: 'video_max_percent',
-            //             content: 0
-            //         })
-            //     }
-            //     var _this = this
-            //     this.video_url = v.video_url;
-            //     this.video_name = v.video_name;
-            //     this.chapterId = c.id;
-            //     this.video_id = v.id;
-            //     clearInterval(this.progressTimer)
-            //     await this.$nextTick();
-            //     var video = this.$refs.video;
-            //     video.play();
-            //     this.progressTimer = this.startInterval();
-            //     video.addEventListener('timeupdate', function () {
-            //         var time = video.currentTime;
-            //         v.progress = Math.round(time / video.duration * 100);
-            //         if (v.video_progress == 100) {
-            //             clearInterval(_this.progressTimer);
-            //         } else {
-            //             setTimeout(() => {
-            //                 if (getStorage({
-            //                         name: 'video_max_percent'
-            //                     }) > v.video_progress) {
-            //                     v.video_progress = getStorage({
-            //                         name: 'video_max_percent'
-            //                     })
-            //                 }
-            //             }, 1000)
-            //         }
-            //         if (v.progress > getStorage({
-            //                 name: 'video_max_percent'
-            //             })) {
-            //             setStorage({
-            //                 name: 'video_max_percent',
-            //                 content: Math.round(time / video.duration * 100)
-            //             })
-            //         }
-            //     }, false)
-            //     video.addEventListener('ended', function () {
-            //         _this.saveProgress(100);
-            //         clearInterval(_this.progressTimer);
-            //     }, false)
-            // },
             startInterval() {
                 return setInterval(() => {
                     var p = this.lastVideoProcess;
@@ -303,6 +245,7 @@
                 this.chapterId = c.id;
                 this.video_id = v.id;
                 if (this.v_id != v.id) { //点击视频与现在视频不一样
+                    this.saveProgress(this.lastVideoProcess);
                     this.$router.replace({ name: 'videoByVideoId', params: { v_id: v.id, c_id: c.id } });
                     this.lastVideoProcess = 0;
                 }
@@ -368,6 +311,7 @@
                         el.progress = 0;
                         el.videos.map(v=>{
                             v.isAutoAnchor = true; //首次自动定位
+                            v.video_progress = v.video_progress || 0; 
                             return v;
                         })
                         return el;

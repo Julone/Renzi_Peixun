@@ -20,8 +20,8 @@ export const dateFormat = function (time, fmt) {
 }
 export function timeAgo(time) {
     var currentTime = Date.parse(new Date());
-    var dateTime = time.toString();
-    var d_day = Date.parse(new Date(dateTime.replace(/-/g, "/"))) || dateTime;
+    var dateTime = time.toString().replace(/-/g, "/").replace(/\.[\d]+$/,'');
+    var d_day = new Date(dateTime).getTime() || dateTime;
     var day = Math.abs(parseInt((d_day - currentTime) / 1000 / 3600 / 24));
     var hour = Math.abs(parseInt((d_day - currentTime) / 1000 / 3600));
     var minutes = Math.abs(parseInt((d_day - currentTime) / 1000 / 60));

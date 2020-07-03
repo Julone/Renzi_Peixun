@@ -1,7 +1,7 @@
 <template>
     <div class="TEST-PAGE MODULE">
         <van-sticky>
-            <van-nav-bar title="培训考试" left-text="返回" left-arrow @click-left="onClickLeft" @click-right="onClickRight">
+            <van-nav-bar title="培训考试" left-text="返回" left-arrow @click-left="$router.go(-1)" @click-right="onClickRight">
                 <template #right>
                     <van-circle v-if="leftRate" size="30" v-model="leftRate" stroke-width="60" :speed="100"
                         layer-color="#e6e6e6">
@@ -56,7 +56,7 @@
                                             <van-cell v-for="o in el.options" :key="o.id" :title="o.xx+ '.' + o.xxName"
                                                 clickable :border="false" @click="toggleCheckbox(o.id)">
                                                 <template #right-icon>
-                                                    <van-checkbox ref="checkbox" :o_id="o.id" style="margin-bottom:5px"
+                                                    <van-checkbox shape="square" ref="checkbox" :o_id="o.id" style="margin-bottom:5px"
                                                         :name="o.xx"></van-checkbox>
                                                 </template>
                                             </van-cell>
@@ -130,13 +130,11 @@
         ],
 
         methods: {
-            onClickLeft() {
-                this.$dialog.confirm({
+            onConfirmLeave() {
+                return this.$dialog.confirm({
                     title: '是否退出考试?',
                     message: '你已答题的内容将无法保存,需要重新答题!'
-                }).then(res => {
-                    this.$router.go(-1)
-                }).catch(e => e)
+                }).then(res => true).catch(e => false)
             },
             onClickRight() {
                 var second = 5;
@@ -258,6 +256,11 @@
         },
         beforeDestroy() {
             clearInterval(this.clocker)
+        },
+        beforeRouteLeave (to, from, next) {
+            return this.onConfirmLeave().then(confirm=>{
+                confirm && next(vm=> vm.$router.go(-1) )
+            })
         }
     }
 </script>

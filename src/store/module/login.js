@@ -14,14 +14,19 @@ export default {
     },
     actions:{
         login_getToken({commit}, val) {
-            if(process.env.NODE_ENV == 'development'){
-                return login_getToken().then(r=>{
-                    commit('login_set_apptoken', r.data);
-                    Toast.success('获取Token成功!')
-                })
-            }else{
-                window.location.href= `./login2.aspx?gotourl=${location.href}`;
-            }
+            return new Promise((resolve,reject) => {
+                if(process.env.NODE_ENV == 'development'){
+                    login_getToken().then(r=>{
+                        commit('login_set_apptoken', r.data);
+                        Toast.success('获取Token成功!');
+                        resolve(true)
+                    }).catch(e=> reject(false))
+                }else{
+                    window.location.href= `./login2.aspx?gotourl=${location.href}`;
+                    return resolve(true)
+                }
+            })
+         
         },
         login_logout({commit, state}) {
            return Dialog.confirm({

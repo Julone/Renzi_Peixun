@@ -64,22 +64,19 @@ const routes = [
   {
     path: '*',
     name: 'page404',
-    component: ()=>import('../views/_Error.vue'),
-    meta: {
-      openTabbar:true
-    }
+    component: ()=>import('../views/_Error.vue')
   }
 ]
 
 const router = new VueRouter({
-  // mode: process.env.VUE_APP_ROUTER_MODE,
-  mode: 'history',
+  mode: process.env.VUE_APP_ROUTER_MODE,
   routes
 })
-router.beforeEach((to,from,next) => {
+router.beforeEach(async (to,from,next) => {
   if(store.getters.apptoken) {
     next()
   }else{
+    await store.dispatch('login_getToken');
     next()
   }
 })

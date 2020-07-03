@@ -17,7 +17,7 @@ export function login_getToken(){
 export function home_getCourseList(){
     return axiosByFormData({
         url: baseUrl,
-        method: 'GET',
+        method: 'POST',
         params: {
             serviceName: 'svr-build',
             action: 'getCourseList'

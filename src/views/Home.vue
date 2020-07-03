@@ -27,7 +27,6 @@
           </van-image>
         </van-cell>
       </van-list>
- 
       <!-- 空内容  -->
       <van-empty class="EmptyPanel" v-if="listLoading && !courseList.length" description="暂无课程"></van-empty>
     </van-pull-refresh>

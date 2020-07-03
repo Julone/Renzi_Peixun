@@ -1,9 +1,8 @@
 <template>
     <div class="ERROR_MODULE MODULE">
 
-        <van-empty description="找不到此页面">
-            <van-button type="info" round plain :to="{path: '/'}">返回首页</van-button>
-
+        <van-empty image="search" description="找不到此页面">
+            <van-button borderless type="info"  plain :to="{path: '/'}">返回首页</van-button>
         </van-empty>
     </div>
 </template>
