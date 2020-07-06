@@ -1,6 +1,6 @@
 import store from '@/store'
 export const dateFormat = function (time, fmt) {
-    time = typeof time == 'string' ? new Date(time) : time;
+    time = time instanceof Date ?  time : new Date(time);
     var o = {
         "M+": time.getMonth() + 1, //月份 
         "d+": time.getDate(), //日 
@@ -19,13 +19,13 @@ export const dateFormat = function (time, fmt) {
     return fmt;
 }
 export function timeAgo(time) {
-    var currentTime = Date.parse(new Date());
+    var currentTime = store.getters.appStandardTime();
     var dateTime = time.toString().replace(/-/g, "/").replace(/\.[\d]+$/,'');
     var d_day = new Date(dateTime).getTime() || dateTime;
-    var day = Math.abs(parseInt((d_day - currentTime) / 1000 / 3600 / 24));
-    var hour = Math.abs(parseInt((d_day - currentTime) / 1000 / 3600));
-    var minutes = Math.abs(parseInt((d_day - currentTime) / 1000 / 60));
-    var seconds = Math.abs(parseInt((d_day - currentTime) / 1000));
+    var day = Math.abs(parseInt(((d_day - currentTime) / 1000 / 3600 / 24).toFixed(2)));
+    var hour = Math.abs(parseInt(((d_day - currentTime) / 1000 / 3600).toFixed(2)));
+    var minutes = Math.abs(parseInt(((d_day - currentTime) / 1000 / 60).toFixed(2)));
+    var seconds = Math.abs(parseInt(((d_day - currentTime) / 1000).toFixed(2)));
     if (day > 367) {
         return parseInt(day / 365) + "年前".toString();
     } else if (day > 31) {
@@ -38,8 +38,10 @@ export function timeAgo(time) {
         return parseInt(hour) + "小时前".toString();
     } else if (minutes > 0 && minutes < 60) {
         return parseInt(minutes) + "分钟前".toString();
-    } else if (seconds >= 0 && seconds < 60) {
+    } else if (seconds > 0 && seconds < 60) {
         return parseInt(seconds) + "秒前".toString();
+    } else if(seconds ==  0){
+        return "刚刚";
     }
 }
 export const axios_dataToFormdata = function dataToFormdata(data = {}) {

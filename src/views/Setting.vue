@@ -7,7 +7,7 @@
         <template #title>
           <div class="userInfo-container">
                <div class="userInfo-title">
-              <van-icon size="25" name="https://b.yzcdn.cn/vant/icon-demo-1126.png" />
+              <van-icon name="manager-o" size="20"/>
               <span style="font-size:20px">
                 {{userName || '未登录'}}
               </span>
@@ -47,15 +47,14 @@
           </div>
         </template>
       </van-cell>
-      <van-cell-group title="  "  :border="false">
+      <van-cell-group title="  " >
         <van-cell title="软件版本">
           {{$store.state.setting.app_version}}
         </van-cell>
         <van-cell title="清除缓存" is-link @click="$store.dispatch('setting_clearCache')">
         </van-cell>
       </van-cell-group>
-      <!-- <van-cell title="注销登录" is-link @click="$store.dispatch('login_logout')">
-      </van-cell> -->
+      <van-cell title="退出应用"  is-link @click="exitApp"></van-cell>
     </main>
   </div>
 </template>
@@ -77,6 +76,9 @@
       })
     },
     methods: {
+      exitApp(){
+        wx.closeWindow();
+      },
       onCourseClick(el) {
         this.$store.dispatch('home_add_course_record', el)
         // console.log(this.$store.getters.getters_home_course_record);
@@ -88,10 +90,7 @@
         });
       },
       onLoginClick(){
-        this.$store.dispatch('login_getToken').then(r=>{
-          this.getUserInfo();
-        })
-        
+        this.$router.push('/login');
       },
       getUserInfo(){
         return setting_getUserInfo().then(r => {

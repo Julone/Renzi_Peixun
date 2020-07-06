@@ -3,7 +3,7 @@ import { setStorage, getStorage, clearStorage } from "./../../utils/storage";
 import router from "@/router";
 export default {
   state: {
-    app_version: '20200701',
+    app_version: '20200706',
     userName: '',
     userId: '',
     headImg:getStorage({name: 'headImg'}) || ""

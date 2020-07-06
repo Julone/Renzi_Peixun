@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
-import {addScript} from './../utils/utils'
 Vue.use(VueRouter);
 
 const routes = [
@@ -54,6 +53,11 @@ const routes = [
     component: ()=>import('../views/Login.vue'),
   },
   {
+    path: '/search',
+    name: 'search',
+    component: ()=>import('../views/Search.vue'),
+  },
+  {
     path: '/setting',
     name: 'setting',
     component: ()=>import('../views/Setting.vue'),
@@ -72,20 +76,15 @@ const router = new VueRouter({
   mode: process.env.VUE_APP_ROUTER_MODE,
   routes
 })
-router.beforeEach(async (to,from,next) => {
-  if(store.getters.apptoken) {
-    next()
-  }else{
-    await store.dispatch('login_getToken');
-    next()
-  }
-})
-router.afterEach((to,from) => {
-  if(to.query && to.query.hasOwnProperty('debug')){
-    console.log('vConsole Start');
-    addScript('https://cdn.bootcdn.net/ajax/libs/vConsole/3.3.4/vconsole.min.js', () => {
-      window.VConsole && new window.VConsole();
+router.beforeEach((to,from,next) => {
+  console.log(to.meta.openTabbar, !to.meta.keepAlive)
+  if(to.meta.openTabbar && !to.meta.keepAlive){
+    console.log(1)
+    next(vm => {
+      console.log(vm)
     })
+  }else{
+    next()
   }
 })
 export default router

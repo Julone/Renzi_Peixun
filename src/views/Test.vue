@@ -74,18 +74,24 @@
                         </div>
                         <div class="form-item" v-if="el.tmType== 'P'">
                             <!-- 对错题 -->
-                            <van-field :name="'checkbox'+el.id" :rules="[{ required: true, message: '请勾选你的选项' }]">
+                            <van-field :name="'duicuo'+el.id" :rules="[{ required: true, message: '请勾选你的选项' }]">
                                 <test-qt :el="el" slot="label"></test-qt>
                                 <template #input>
                                     <van-radio-group v-model="el.answer">
                                         <van-cell>
                                             <template #title>
-                                                <van-radio ref="checkbox" style="margin-bottom:5px" name="T">
-                                                    对
+                                                <van-radio class="panduan-right" style="margin-bottom:5px" name="T">
+                                                     正确
+                                                    <template #icon>
+                                                      <van-icon name="success" />
+                                                    </template> 
                                                 </van-radio>
                                             </template>
-                                            <van-radio ref="checkbox" style="margin-bottom:5px" name="F">
-                                                错</van-radio>
+                                            <van-radio class="panduan-wrong"  style="margin-bottom:5px" name="F">错误
+                                                  <template #icon>
+                                                      <van-icon name="cross" />
+                                                    </template>
+                                            </van-radio>
                                         </van-cell>
                                     </van-radio-group>
                                 </template>
@@ -119,7 +125,7 @@
             return {
                 sj_info: {},
                 tm_list: [],
-                startTime: dateFormat(new Date(), 'yyyy-MM-dd hh:mm:ss'),
+                startTime: dateFormat(this.$store.getters.appStandardTime(), 'yyyy-MM-dd hh:mm:ss'),
                 leftRate: 0,
                 leftTime: 0,
                 disabledSubmit: false
@@ -180,7 +186,7 @@
                     userId: 1,
                     sjName: this.sj_info.sub_title,
                     sjId: this.sj_info.id,
-                    endTime: dateFormat(new Date(), 'yyyy-MM-dd hh:mm:ss'),
+                    endTime: dateFormat(this.$store.getters.appStandardTime(), 'yyyy-MM-dd hh:mm:ss'),
                     startTime: this.startTime,
                     answerList: tm_list
                 })
@@ -275,7 +281,7 @@
 
         .header {
             .sj_title {
-                font-size: 1.5em;
+                font-size: .7rem;
                 padding: 0 15px;
                 text-align: justify;
                 .flex();
@@ -283,7 +289,7 @@
 
             .sj_info {
                 .flex();
-                font-size: .9em;
+                font-size: .5rem;
                 color: #333;
                 justify-content: space-around;
             }
@@ -295,7 +301,16 @@
             text-align: center;
             margin: 20px auto 30px;
         }
-
+ 
+        .myStyle(@color){ background-color: @color; border-color: @color; }
+        .panduan-wrong,.panduan-right {
+            .van-radio__icon--checked{
+                & + .van-radio__label{
+                    color: @j_main_color
+                }
+            }
+        }
+ 
         .content {
             .question-list {
                 .block();

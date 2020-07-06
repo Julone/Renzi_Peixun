@@ -15,6 +15,7 @@
   <link rel="apple-touch-icon" size="152x152" href="<%= BASE_URL %>static/favicon.png">
   <link rel="apple-touch-icon" size="167x167" href="<%= BASE_URL %>static/favicon.png">
   <link rel="apple-touch-icon" size="180x180" href="<%= BASE_URL %>static/favicon.png">
+  <meta name="color-scheme" content="light dark">
   <!-- <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.3.4/vconsole.min.js"></script> -->
   <% if( process.env.NODE_ENV == 'development' ){ %>
     <!-- 开发环境 -->
@@ -25,9 +26,31 @@
     <script src="http://tm.lilanz.com/QYWX/project/Julone/cdn/vuex.min.js"></script>
     <script src="http://tm.lilanz.com/QYWX/project/Julone/cdn/vue-router.min.js"></script>
   <% } %>
+
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <script>
+wx.config({
+    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    appId: '', // 必填，公众号的唯一标识
+    timestamp: '', // 必填，生成签名的时间戳
+    nonceStr: '', // 必填，生成签名的随机串
+    signature: '',// 必填，签名
+    jsApiList: ['openLocation'] // 必填，需要使用的JS接口列表 这里填写需要用到的微信api openlocation为使用微信内置地图查看位置接口
+});
+wx.ready(function () {
+    wx.checkJsApi({
+        jsApiList: ['checkJsApi','openLocation'],
+        success: function (res) {}
+    });
+});
+wx.error(function(res){
+    console.log(res);
+});
+
+  </script>
 </head>
 
-<body>
+<body ontouchstart>
   <div id="app"></div>
   <!--[if lt IE 9]> <style> html body { background: #fff; padding: 0; margin: 0; } .upgrade-tip { font-size: 14px; width: 1040px; margin: 54px auto 0; text-align: center } .upgrade-tip .logo-upgrade { margin-top: 10px; text-align: left } .upgrade-tip .logo-upgrade a { display: block; width: 148px } .upgrade-tip .logo-upgrade img { width: 100%; vertical-align: bottom } .icon-upgrade { width: 430px; height: 230px; margin: 32px auto 16px } .icon-upgrade a { display: block } .icon-upgrade img { display: block; width: 100%; } .upgrade-tip p { color: #626262; width: 442px; line-height: 20px; margin: 0 auto; text-align: center } .skip-upgrade a { display: inline-block; width: 170px; margin: 25px 30px 0 0 } .skip-upgrade a { outline: none; height: 40px; line-height: 40px; text-decoration: none; background: #2b7ffb; border: none; color: white; border-radius: 10px; } </style> <div class="upgrade-tip"> <div class="icon-upgrade"><img src="//mat1.gtimg.com/sports/kbsweb2/statics/upgrade-launch_e2e0f9.png" alt="浏览器升级提示"></div> <p>为了您的最佳体验，我们于即日起停止对IE8以及以下版本浏览器的支持 <br>请您升级IE或使用其他浏览器!</p> <div class="skip-upgrade"> <a title="更新ie浏览器" target="_blank" style="background:red" href="https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads"> 更新ie浏览器 </a> <a title="下载chrome浏览器" target="_blank"  href="//pc.qq.com/detail/1/detail_2661.html"> 下载chrome浏览器 </a> </div> </div> <![endif]-->
 </body>

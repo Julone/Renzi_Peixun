@@ -2,7 +2,7 @@
     <div class="VIDEO-PAGE NO_PADDING">
         <div class="top">
             <van-nav-bar style="width:100%" :title="courseInfo.course_name" left-text="返回" left-arrow
-                @click-left="onClickLeft">
+                @click-left="$store.dispatch('app_go_back')">
                 <template #right>
                     <van-icon class="rotate360" @click="$eventBus.$emit('refreshView',400)" name="replay" size=".5rem"/>
                 </template>   
@@ -14,7 +14,7 @@
         </div>
 
         <div class="main">
-            <van-tabs ref="vanTab" scrollspy swipeable @change="tabChange" animated :offset-top="350" v-model="activeTab"
+            <van-tabs ref="vanTab" scrollspy swipeable animated :offset-top="350" v-model="activeTab"
                 color="rgb(25,137,250)">
                 <van-tab name="info" title="课程信息">
                     <div class="course_info">
@@ -72,8 +72,9 @@
                 <van-tab name="comment" title="课程评论">
                     <van-pull-refresh v-model="commentLoading" @refresh="getCommentList">
                         <van-list>
-                            <van-button class="sendCommentBtn" type="info" block
-                                @click="openDialog({parentId: '',parentUserName: ''})">我也要评论</van-button>
+                            <van-button class="sendCommentBtn" type="info" block 
+                            @click="openDialog({parentId: '',parentUserName: ''})">我也要评论</van-button>
+
                             <div class="list-item" v-for="(el,ind) in commentList" :key="ind">
                                 <van-swipe-cell>
                                     <div class="comment-item parentNode">
@@ -126,18 +127,20 @@
                                 </div>
                             </div>
                             <van-divider>没有更多了</van-divider>
+                      
                         </van-list>
+                   
                         <van-popup v-model="showReply" transition="van-slide-up" get-container="body"
-                            safe-area-inset-bottom position="bottom" close-on-popstate :style="{ height: '30vh'}"
+                            safe-area-inset-bottom position="bottom" close-on-popstate :style="{ height: '5.3rem'}"
                             @closed="$eventBus.$emit('triggerScroll', {})">
-                            <div style="padding:10px;margin-top:5px;">
+                            <div class="reply-component" style="padding:10px;margin-top:5px">
                                 <van-field v-model="commentContent" rows="3" type="textarea" maxlength="100"
                                     :placeholder="ReplyPlaceholder" show-word-limit clickable />
                                 <van-button type="info" block @click="submitComment">评论</van-button>
                             </div>
                         </van-popup>
                     </van-pull-refresh>
-
+                  
                 </van-tab>
             </van-tabs>
         </div>
@@ -186,6 +189,7 @@
                 parentUserName: null,
                 commentContent: '',
                 curVideoInfo: {},
+                lastVideoProcess: 0
             }
         },
         props: ['v_id', 'c_id', 'k_id'],
@@ -195,10 +199,7 @@
             }
         },
         methods: {
-            tabChange() {},
-            onClickLeft() {
-                this.$router.push('/')
-            },
+    
             openDialog({
                 parentId,
                 parentUserName
@@ -221,9 +222,8 @@
                     l.close();
                     r.errcode == 0 ? this.$toast.success(r.errmsg) : this.$toast.fail(r.errmsg)
                     this.commentContent = "";
-                    var obj = this.commentList.find(el => el.id == ths.parentId);
-                    
                 }).catch(e => {
+                    console.log(e);
                     this.$toast.fail('评论发送失败!')
                 }).finally(() => {
                     this.showReply = false;
@@ -278,7 +278,7 @@
                     }
                 })
             },
-            saveProgress(progress = 100) {
+            saveProgress(progress = 0) {
                 var _this = this
                 video_saveVideoProgress({
                     courseId: _this.courseId,
@@ -349,6 +349,16 @@
     }
 </script>
 <style lang="less">
+// .reply-component{
+// padding:10px;margin-top:5px;
+// .flex(@d:column);
+// .van-cell{
+//     flex:1
+// }
+// .van-button{
+//     flex:none
+// }
+// }
     .VIDEO-PAGE {
 
         .flex(@d: column; @j: flex-start; @a: stretch);
@@ -410,6 +420,9 @@
 
                     .van-tab__pane-wrapper {
                         overflow-y: auto;
+                        .van-pull-refresh__track{
+                            min-height: 40vmax;
+                        }
                     }
                 }
 
@@ -460,6 +473,8 @@
                 // background: rgb(91, 91, 91);
                 height: 40px;
                 .flex();
+                position: sticky;
+                bottom: 5px;
 
             }
 

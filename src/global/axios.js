@@ -40,7 +40,8 @@ axiosBase.interceptors.response.use(res => {
   if (errcode != 0 || status != 200) {
     Toast({ message: errmsg, forbidClick: true, duration: 1000 });
     if (errcode == 401 || errcode == 402) {
-      store.dispatch('login_getToken');
+      // store.dispatch('login_getToken');
+      router.push('/login')
     }
     return Promise.reject(res.data.errmsg);
   } else {

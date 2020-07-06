@@ -1,7 +1,7 @@
 <template>
   <div id="app" :style="{height:appHeight + 'px'}">
     <keep-alive>
-      <router-view v-if="$route.meta.keepAlive"></router-view>
+      <router-view :key="refreshToken" v-if="$route.meta.keepAlive"></router-view>
     </keep-alive>
     <transition name="fadeApp" mode="out-in" >
       <router-view :key="refreshToken" v-if="!$route.meta.keepAlive"></router-view>
@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters} from 'vuex';
 export default {
   data(){
     return {
@@ -41,6 +41,12 @@ export default {
       this.$store.commit('set_appHeight',window.innerHeight );
     }
   },
+  created(){
+    this.$store.dispatch('app_calibrate_time');
+    this.$store.dispatch('checkDebugMode')
+    // this.$store.dispatch('login_getToken');
+    console.log(this.$route);
+  },
   mounted(){
     this.$eventBus.$on('triggerScroll', this.triggerScroll);
     this.$eventBus.$on('refreshView', this.refreshView);
@@ -52,45 +58,32 @@ export default {
 
 <style lang="less">
 @import url('./App.less');
-
 *{
-  // border: 1px solid red;
-  // box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 body{
-    // padding-bottom: constant(safe-area-inset-bottom);
-  // padding-bottom: env(safe-area-inset-bottom);
-  width: 100vw;
-  // background: red;
-  height: 100%;
-    /* 兼容 iOS >= 11.2 */
-    padding-bottom: constant(safe-area-inset-bottom);
-  /* 兼容 iOS < 11.2 */
-  padding-bottom: env(safe-area-inset-bottom);
-// -webkit-overflow-scroll: touch;
+  overflow: hidden;
 }
 #app{
   width: 100%;
-  max-width: 360px;
   margin: 0 auto;
   touch-action: manipulation;
   -webkit-font-smoothing: antialiased;
   overflow-y: auto;
   overflow-x: hidden;
-
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: transparent;
   &>div.MODULE{
     height: auto;
     min-height: calc(100% - 50px);
     padding: 5px 10px 0 !important;
     margin: 0 auto;
     box-sizing: border-box;
+    .van-pull-refresh{
+        min-height: calc(100vmax - 60px);
+    }
   }
 }
 
-.van-pull-refresh{
-    min-height: calc(100vmax - 60px);
-}
+
 </style>

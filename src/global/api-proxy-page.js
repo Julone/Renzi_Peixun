@@ -1,6 +1,7 @@
 import {axiosByFormData,axiosSilent} from './axios';
 var baseUrl = process.env.NODE_ENV == 'development'? '/exec.ashx': 'http://tm.lilanz.com/qywx/webbll/exec.ashx';
 // http://tm.lilanz.com/qywx/webbll/exec.ashx?serviceName=svr-build&action=getCommentByCourseId
+
 export function login_getToken(){
     return axiosByFormData({
         url: baseUrl,
@@ -145,5 +146,47 @@ export function setting_getUserInfo(){
             serviceName: 'svr-build',
             action: 'getUserMsg'
         },
+    })
+}
+
+export function app_getServerTime(){
+    return axiosSilent({
+        url: baseUrl,
+        method: 'POST',
+        params: {
+            serviceName: 'svr-build',
+            action: 'getNowTimeStamp'
+        },
+    })
+}
+
+export function search_getServerTime(courseName){
+    return axiosSilent({
+        url: baseUrl,
+        method: 'POST',
+        params: {
+            serviceName: 'svr-build',
+            action: 'searchCourse'
+        },
+        data: {
+            data: {
+                courseName: courseName
+            }
+        }
+    })
+}
+
+
+export function home_getLunboList(){
+    return axiosSilent({
+        url: baseUrl,
+        method: 'POST',
+        params: {
+            serviceName: 'svr-build',
+            action: 'searchRotationCourse'
+        },
+        data: {
+         
+        }
     })
 }

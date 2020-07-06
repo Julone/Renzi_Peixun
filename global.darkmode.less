@@ -1,0 +1,72 @@
+@media (prefers-color-scheme: dark) {
+    @gray: #282828;
+    @white: rgb(236, 236, 236);
+    color: @white;
+    @black:#000;
+   .van-field__control,.van-search__action{
+        color:@white ;
+    }
+    [type='search'],.van-field__value,.van-radio__label{
+        color:@white;
+    }
+    .TEST-PAGE .header .sj_info{
+        color: lighten(@gray,20%);
+    }
+    .TEST-PAGE .form-item > .van-cell{
+        box-shadow: none;
+    }
+    textarea{
+        color: @white !important;
+    }
+    .VIDEO-PAGE .main .list-item .comment-item{
+        background-color: @gray;
+    }
+    .van-search{
+        background-color: transparent;
+    }
+    .van-search__content,.van-popup{
+        background-color: @gray;
+    }
+    .van-search .van-cell{
+        background: transparent;
+    }
+    .van-tabbar,.van-nav-bar,.van-tabs__nav,.van-search__action:active{
+        background-color: @gray;
+    }
+    .van-cell--clickable:active{
+        background-color: lighten(@gray,10%);
+    }
+    .van-image{
+        filter: brightness(.8);
+    }
+    .van-collapse-item__content{
+        background-color:darken(@gray,10%);
+    }
+    [class*='van-hairline']::after,.van-cell::after,.van-divider{
+        border-color: lighten(@gray,10%);
+    }
+    .van-collapse-item--border::after,.van-collapse-item__title--expanded::after{
+        border-color: lighten(@gray,5%);
+    }
+    .van-collapse-item .van-cell{
+        background-color: transparent !important;
+
+    }
+    .van-button,.van-dialog{
+        background-color: @gray;
+    }
+    .SETTING-PAGE .zuijin{
+        background-color: @gray;
+    }
+    .van-tab.van-tab--active{
+        color: @white;
+    } 
+    .van-nav-bar__title,.van-dialog__cancel{
+        color: @white;
+    }
+    
+    .van-cell{
+        background-color: @black;
+        color: @white
+    }
+}
