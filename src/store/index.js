@@ -21,12 +21,14 @@ export default new Vuex.Store({
   mutations: {
     set_appHeight(state, appHeight){
       state.appHeight = appHeight;
+      console.log('窗口高度：' + state.appHeight);
     },
     set_htmlFontSize(state, htmlFontSize){
       state.htmlFontSize = htmlFontSize;
     },
     set_appTimeCalibration(state, serverTime){
       state.appTimeCalibration = serverTime - Date.now();
+      console.log('时间校准成功: ' + state.appTimeCalibration + "ms");
     },
     set_debugMode(state,debugMode){
       state.debugMode= debugMode;
@@ -35,7 +37,7 @@ export default new Vuex.Store({
   },
   actions: {
     app_calibrate_time({commit},val){
-      app_getServerTime().then(r=>{
+      return app_getServerTime().then(r=>{
         r.errcode == 0 && commit('set_appTimeCalibration',r.data)
       })
     },
@@ -51,13 +53,11 @@ export default new Vuex.Store({
       if( state.debugMode ){
         callback()
       }else{
-        setTimeout(()=>{
-          if(vm.$route.query && vm.$route.query.hasOwnProperty('debug')){
+          if(vm.$route && vm.$route.query.hasOwnProperty('debug')){
             console.log('vConsole Start');
             commit('set_debugMode', true)
             callback();
-          };
-        },500);
+          }
       }
     }
 
@@ -69,7 +69,7 @@ export default new Vuex.Store({
     htmlFontSize(state){
       return state.htmlFontSize
     },
-    appStandardTime: (state) => () => {
+    getServerTime: (state) => () => {
       return Date.now() + state.appTimeCalibration
     }
   },

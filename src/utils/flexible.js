@@ -75,6 +75,7 @@ import store from '@/store'
         var rem = width / 10;
         docEl.style.fontSize = rem + 'px';
         flexible.rem = win.rem = rem;
+       
         store.commit('set_htmlFontSize',flexible.rem );
     }
 

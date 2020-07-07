@@ -19,7 +19,7 @@ export const dateFormat = function (time, fmt) {
     return fmt;
 }
 export function timeAgo(time) {
-    var currentTime = store.getters.appStandardTime();
+    var currentTime = store.getters.getServerTime();
     var dateTime = time.toString().replace(/-/g, "/").replace(/\.[\d]+$/,'');
     var d_day = new Date(dateTime).getTime() || dateTime;
     var day = Math.abs(parseInt(((d_day - currentTime) / 1000 / 3600 / 24).toFixed(2)));

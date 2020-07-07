@@ -14,7 +14,9 @@ import {
     Progress,
     Search,
     Swipe,
-    SwipeItem
+    SwipeItem,
+    NoticeBar,
+    Row,Col
 } from 'vant'
 Vue.use(Toast).use(Dialog).use(Divider).use(Checkbox).use(CheckboxGroup)
 .use(Radio).use(RadioGroup).use(Field).use(Button)
@@ -22,4 +24,5 @@ Vue.use(Toast).use(Dialog).use(Divider).use(Checkbox).use(CheckboxGroup)
 .use(Form).use(Tag).use(PullRefresh).use(List).use(Collapse).use(CollapseItem)
 .use(NavBar).use(Tabbar).use(TabbarItem).use(Tabs).use(Tab).use(SwipeCell)
 .use(Popup).use(Lazyload).use(Empty).use(Loading).use(Image).use(Skeleton)
-.use(Progress).use(Search).use(Swipe).use(SwipeItem)
+.use(Progress).use(Search).use(Swipe).use(SwipeItem).use(NoticeBar)
+.use(Row).use(Col)

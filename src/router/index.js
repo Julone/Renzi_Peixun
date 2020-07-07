@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
-Vue.use(VueRouter);
+import vm from './../main.js'
+Vue.use(VueRouter)
 
 const routes = [
   {
@@ -77,14 +78,13 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to,from,next) => {
-  console.log(to.meta.openTabbar, !to.meta.keepAlive)
-  if(to.meta.openTabbar && !to.meta.keepAlive){
-    console.log(1)
-    next(vm => {
-      console.log(vm)
-    })
-  }else{
-    next()
+  // if (to.name !== 'login' && !store.getters.apptoken) next({ name: 'login' })
+  // else next()
+  next();
+})
+router.afterEach((to, from) => {
+  if( !to.meta.savedPosition ) {
+    vm.$eventBus.$emit('triggerScroll', { x: 0,y: 0 }, true)
   }
 })
 export default router

@@ -21,14 +21,11 @@ export default {
         message: "确认要清除缓存吗?",
       })
         .then((r) => {
-          Toast.loading("正在清除中...");
           clearStorage();
           clearStorage({
             type: "session",
           });
-          setTimeout(() => {
-            Toast.success("清除完成");
-          }, 1000);
+          Toast.success("清除完成");
         })
         .catch((e) => e);
     },

@@ -1,16 +1,19 @@
 <template>
   <div class="HOME-PAGE MODULE">
     <van-pull-refresh v-model="isLoading" success-text="刷新成功" @refresh="onRefresh">
-      <header>
-       
-        <!-- <app-title>课程中心</app-title> -->
-        <!-- <h1 class="page-title">课程中心</h1> -->
-        <van-search @click="onSearch" v-model="key_word" placeholder="请输入搜索关键词" @search="onSearch" shape="" > </van-search>
-      </header>
+      
+      <van-sticky>
+        <!-- <header> -->
+          <!-- <app-title>课程中心</app-title> -->
+          <!-- <h1 class="page-title">课程中心</h1> -->
+          <van-search @click="onSearch" v-model="key_word" placeholder="搜索老师、课程、机构" @search="onSearch" shape="" ></van-search>
+        <!-- </header> -->
+        
+      </van-sticky>
 
            
       <!-- 骨架屏 -->
-      <div  v-if="isLoading">
+      <div v-if="isLoading">
           <div class="lunbo-container">
             <div class="lunbo">
               <van-image width="100%" height="100%"></van-image>
@@ -19,7 +22,7 @@
             <div class="LoadPanel">
           <van-cell  v-for="el in 3" :key="el" is-link>
             <template #title> <van-skeleton round  title :row="2" /> </template>
-            <van-image width="100%" height="80"></van-image>
+            <van-image radius="0.1rem" width="100%" height="2.2rem"></van-image>
           </van-cell>
         </div>   
       </div>
@@ -40,7 +43,7 @@
           :title="el.teacher + '-' + el.course_name" :label="el.info" is-link
           @click="onCourseClick(el)">
           <!-- <img v-lazy="el.image" width="100%" :alt="el.course_name"> -->
-          <van-image height="80" width="100%" lazy-load :src="el.image" fit="scale-down">
+          <van-image radius=".1rem" height="2.2rem" width="100%" lazy-load :src="el.image" fit="cover">
             <template v-slot:loading>
               <van-loading type="circular" color="#1989fa" size="40" />
             </template>
@@ -116,7 +119,7 @@
       if (this.$route.meta.keepAlive && this.$route.meta.savedPosition) {
         this.$eventBus.$emit('triggerScroll', this.$route.meta.savedPosition)
       }
-      console.log('activated', this.hasError);
+      console.log('activated');
       if(this.hasError) {
         this.$eventBus.$emit('refreshView')
       }
@@ -142,46 +145,61 @@
     .van-pull-refresh__track {
       .flex();
     }
-    .van-search{
-      padding: 10px 0;
+    /deep/.van-sticky--fixed{
+    padding: 0 10px;
+    box-shadow: 0px 4px 20px -13px rgba(0, 0, 0, 0.5);
+    background: white;
+    @media (prefers-color-scheme: dark) {
+      background: black;
     }
-    header {
-      // width: 94%;
-      margin: 0px auto;
-      font-size: 20px;
-      position: sticky;
-      flex: none;
-      top: 0;
+    }
+    .van-search{
+      padding: 13px 0;
     }
     .lunbo{
       overflow: hidden;
       height: 100%;
+      
     }
     .lunbo-container{
+         -webkit-appearance:none;
       height: 130px;
-        border-radius: 10px;
+        border-radius: 7px;
         position: relative;
         width: 100%;
-        margin: 10px auto 10px;
+        margin: 0px auto 15px;
         overflow: hidden;
-        transform: translateY(0);
-    }
+        -webkit-backface-visibility: hidden;
+        transform: translate3d(0, 0, 0);
+        box-shadow: 0px 4px 20px -13px rgba(0, 0, 0, 0.5);
 
-    .van-list {
+    }
+    .van-skeleton{
+      padding: 0 20px 0 0px;
+    }
+  
       // flex: 1;
       // min-height: 70vmax;
-
-      .van-cell__title {
-        font-size: 20px;
+      .van-cell{
+        padding: 10px 5px;;
+        .van-cell__title {
+        font-size: 18px;
       }
 
       .van-cell__label {
-        font-size: 16px;
-        ;
+        font-size: 14px;
+        
       }
+      .van-cell__right-icon{
+        margin-left: 1px;
+      }
+
+      }
+
+      
 
       // height: 100%;
       // overflow-y: auto;
-    }
+    
   }
 </style>

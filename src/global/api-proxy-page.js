@@ -97,7 +97,7 @@ export function video_saveVideoProgress({courseId,chapterId,videoId,progress}){
 }
 
 export function video_getCommentById(courseId){
-    return axiosByFormData({
+    return axiosSilent({
         url: baseUrl ,
         method: 'POST',
         params: {
@@ -184,9 +184,20 @@ export function home_getLunboList(){
         params: {
             serviceName: 'svr-build',
             action: 'searchRotationCourse'
+        }
+    })
+}
+
+export function video_deleteCommentByCommentId(id){
+    return axiosSilent({
+        url: baseUrl,
+        method: 'POST',
+        params: {
+            serviceName: 'svr-build',
+            action: 'delCommentByCommentId'
         },
         data: {
-         
+            data: {id}
         }
     })
 }

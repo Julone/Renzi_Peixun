@@ -4,8 +4,9 @@
             <van-nav-bar style="width:100%" :title="courseInfo.course_name" left-text="返回" left-arrow
                 @click-left="$store.dispatch('app_go_back')">
                 <template #right>
-                    <van-icon class="rotate360" @click="$eventBus.$emit('refreshView',400)" name="replay" size=".5rem"/>
-                </template>   
+                    <van-icon class="rotate360" @click="$eventBus.$emit('refreshView',400)" name="replay"
+                        size=".5rem" />
+                </template>
             </van-nav-bar>
             <div class="video_container">
                 <video ref="video_dom" :key="video_id" :src="video_url" :poster="video_poster" autoplay controls
@@ -14,8 +15,8 @@
         </div>
 
         <div class="main">
-            <van-tabs ref="vanTab" scrollspy swipeable animated :offset-top="350" v-model="activeTab"
-                color="rgb(25,137,250)">
+            <van-tabs ref="vanTab" scrollspy :swipeable="activeTab !='comment'" animated :offset-top="350"
+                v-model="activeTab" color="rgb(25,137,250)">
                 <van-tab name="info" title="课程信息">
                     <div class="course_info">
                         <!-- {{courseInfo}} -->
@@ -40,15 +41,15 @@
                 <van-tab name="video" title="视频列表">
                     <div class="chapters-list">
                         <van-collapse v-model="activeVideo">
-                            <van-collapse-item :name="ele.id" v-for="ele in chapters"
-                                :key="ele.id">
+                            <van-collapse-item :name="ele.id" v-for="ele in chapters" :key="ele.id">
                                 <template #title>
                                     <div style="font-size:.6rem;padding-left:5px;">
                                         {{ele.chapter_name}}
                                     </div>
                                 </template>
                                 <div align="center" v-if="ele.videos.length == 0"> 暂无视频 </div>
-                                <div class="video-item" v-else v-for="(v,index) in ele.videos" @click="playVideo(v,ele)" :key="index">
+                                <div class="video-item" v-else v-for="(v,index) in ele.videos" @click="playVideo(v,ele)"
+                                    :key="index">
                                     <van-cell clickable :label="v.id == video_id? '点击开始学习': ''"
                                         icon-prefix="play-circle-o"
                                         :title-style="{color: v.id == video_id? '#1989fa' : ''}">
@@ -70,66 +71,45 @@
                     </div>
                 </van-tab>
                 <van-tab name="comment" title="课程评论">
-                    <van-pull-refresh v-model="commentLoading" @refresh="getCommentList">
+                    <van-pull-refresh v-model="commentLoading" success-text="刷新成功" :head-height="50"
+                        @refresh="getCommentList">
                         <van-list>
-                            <van-button class="sendCommentBtn" type="info" block 
-                            @click="openDialog({parentId: '',parentUserName: ''})">我也要评论</van-button>
+                            <!-- <div style="width:90%;margin:10px auto 0"> -->
+                                <van-notice-bar left-icon="volume-o" text="在代码阅读过程中人们说脏话的频率是衡量代码质量的唯一标准。"
+                                    mode="closeable" />
+                            <!-- </div> -->
 
-                            <div class="list-item" v-for="(el,ind) in commentList" :key="ind">
-                                <van-swipe-cell>
-                                    <div class="comment-item parentNode">
-                                        <div class="title">
-                                            <div class="left">
-                                                {{el.userName}}
-                                            </div>
-                                            <div class="right">
-                                                {{el.createAt}}
-                                            </div>
-                                        </div>
-                                        <div class="content"
-                                            @click="openDialog({parentId: el.id,parentUserName: el.userName})">
-                                            {{el.content}}
-                                        </div>
-                                    </div>
-                                    <template #right>
-                                        <van-button square text="回复"
-                                            @click="openDialog({parentId: el.id,parentUserName: el.userName})"
-                                            type="info" />
-                                    </template>
-                                </van-swipe-cell>
-                                <van-swipe-cell v-for="(ele,index) in el.children"
-                                    v-show="el.expandAll? true :index < 3" :key="index">
-                                    <div class="comment-item childNode">
-                                        <div class="title">
-                                            <div class="left">
-                                                {{ele.userName}} 回复了 {{ele.parentUserName}}
-                                            </div>
-                                            <div class="right">
-                                                {{ele.createAt}}
-                                            </div>
-                                        </div>
-                                        <div class="content"
-                                            @click="openDialog({parentId: el.id,parentUserName: ele.userName})">
-                                            {{ele.content}}
-                                        </div>
-                                    </div>
-                                    <template #right>
-                                        <van-button square text="回复"
-                                            @click="openDialog({parentId: el.id,parentUserName: ele.userName})"
-                                            type="info" />
-                                    </template>
-                                </van-swipe-cell>
+                            <van-button class="sendCommentBtn" type="info" block
+                                @click="openDialog({parentId: '',parentUserName: ''})">我也要评论</van-button>
+                            <transition-group name="van-slide-right">
 
-                                <div class="expandBtn" v-if=" el.children.length > 3"
-                                    @click="el.expandAll = !el.expandAll">
-                                    <span v-show="!el.expandAll">展开评论</span>
-                                    <span v-show="el.expandAll">收起评论</span>
+                                <div class="list-item" v-for="(el) in commentList" :key="el.id">
+                                    <video-com-item :el="el" className="parentNode" :parentId="el.id"
+                                        :parentName="el.userName" :refreshMethod="getCommentList"
+                                        :openDialog="openDialog" />
+                                    <!--父节点-->
+                                    <transition-group name="van-slide-right">
+                                        <video-com-item v-for="(ele,index) in el.children"
+                                            v-show="el.expandAll? true :index < 6" :key="ele.id" :el="ele"
+                                            className="childNode" :parentId="el.id" :erji="true"
+                                            :parentName="ele.userName" :refreshMethod="getCommentList"
+                                            :openDialog="openDialog" />
+                                        <!--子节点-->
+                                    </transition-group>
+                                    <div class="expandBtn van-button" v-if=" el.children.length > 6"
+                                        @click="el.expandAll = !el.expandAll">
+                                        <span v-show="!el.expandAll">
+                                            <van-icon name="arrow-down" /> 展开评论</span>
+                                        <span v-show="el.expandAll">
+                                            <van-icon name="arrow-up" /> 收起评论</span>
+                                    </div>
                                 </div>
-                            </div>
+                            </transition-group>
+
                             <van-divider>没有更多了</van-divider>
-                      
+
                         </van-list>
-                   
+
                         <van-popup v-model="showReply" transition="van-slide-up" get-container="body"
                             safe-area-inset-bottom position="bottom" close-on-popstate :style="{ height: '5.3rem'}"
                             @closed="$eventBus.$emit('triggerScroll', {})">
@@ -140,7 +120,7 @@
                             </div>
                         </van-popup>
                     </van-pull-refresh>
-                  
+
                 </van-tab>
             </van-tabs>
         </div>
@@ -199,7 +179,7 @@
             }
         },
         methods: {
-    
+
             openDialog({
                 parentId,
                 parentUserName
@@ -238,7 +218,7 @@
                     this.saveProgress(p);
                 }, 5 * 1000)
             },
-             async playVideo(v, c) {
+            async playVideo(v, c) {
                 //onchange
                 this.video_url = v.video_url;
                 this.video_name = v.video_name;
@@ -246,14 +226,20 @@
                 this.video_id = v.id;
                 if (this.v_id != v.id) { //点击视频与现在视频不一样
                     this.saveProgress(this.lastVideoProcess);
-                    this.$router.replace({ name: 'videoByVideoId', params: { v_id: v.id, c_id: c.id } });
+                    this.$router.replace({
+                        name: 'videoByVideoId',
+                        params: {
+                            v_id: v.id,
+                            c_id: c.id
+                        }
+                    });
                     this.lastVideoProcess = 0;
                 }
                 await this.$nextTick();
                 var videoDOM = this.$refs.video_dom;
-                videoDOM.addEventListener('timeupdate',  () =>  {
-                    var ratio = Math.round( videoDOM.currentTime / videoDOM.duration * 100);
-                    v.progress = isNaN(v.progress)? 0 : ratio;
+                videoDOM.addEventListener('timeupdate', () => {
+                    var ratio = Math.round(videoDOM.currentTime / videoDOM.duration * 100);
+                    v.progress = isNaN(v.progress) ? 0 : ratio;
                     this.lastVideoProcess = v.progress;
                     if (v.video_progress == 100) {
                         clearInterval(this.progressTimer);
@@ -265,15 +251,16 @@
                     this.saveProgress(100);
                     clearInterval(this.progressTimer);
                 }, false)
-                videoDOM.addEventListener('pause',()=>{
+                videoDOM.addEventListener('pause', () => {
                     clearInterval(this.progressTimer);
                 })
-                videoDOM.addEventListener('play',()=>{
+                videoDOM.addEventListener('play', () => {
                     clearInterval(this.progressTimer)
                     this.progressTimer = this.startInterval();
-                    if(v.video_progress > 0 && v.video_progress < 98 && v.isAutoAnchor) {
+                    if (v.video_progress > 0 && v.video_progress < 98 && v.isAutoAnchor) {
                         console.log(v);
-                        videoDOM.currentTime= (isNaN(videoDOM.duration)? 0: videoDOM.duration) * v.video_progress / 100;
+                        videoDOM.currentTime = (isNaN(videoDOM.duration) ? 0 : videoDOM.duration) * v
+                            .video_progress / 100;
                         v.isAutoAnchor = false;
                     }
                 })
@@ -294,7 +281,8 @@
                     this.commentList = r.data.map(function mapChildren(el) {
                         el.createAt = timeAgo(el.createAt);
                         el.expandAll = false;
-                        if (el.children.length) {
+                        el.children = el.children ? el.children : []
+                        if (el.children && el.children.length) {
                             el.children = el.children.map(mapChildren);
                         }
                         return el;
@@ -309,9 +297,9 @@
                 }).then(r => {
                     this.chapters = r.data.chapters.map(el => {
                         el.progress = 0;
-                        el.videos.map(v=>{
+                        el.videos.map(v => {
                             v.isAutoAnchor = true; //首次自动定位
-                            v.video_progress = v.video_progress || 0; 
+                            v.video_progress = v.video_progress || 0;
                             return v;
                         })
                         return el;
@@ -349,16 +337,16 @@
     }
 </script>
 <style lang="less">
-// .reply-component{
-// padding:10px;margin-top:5px;
-// .flex(@d:column);
-// .van-cell{
-//     flex:1
-// }
-// .van-button{
-//     flex:none
-// }
-// }
+    // .reply-component{
+    // padding:10px;margin-top:5px;
+    // .flex(@d:column);
+    // .van-cell{
+    //     flex:1
+    // }
+    // .van-button{
+    //     flex:none
+    // }
+    // }
     .VIDEO-PAGE {
 
         .flex(@d: column; @j: flex-start; @a: stretch);
@@ -412,7 +400,7 @@
                 .van-tabs__content {
                     overflow-y: auto;
                     // min-height: 300px;
-                    padding: 0px 5px 0;
+                    // padding: 0px 5px 0;
                     flex: 1;
                     align-self: stretch;
                     box-sizing: border-box;
@@ -420,7 +408,8 @@
 
                     .van-tab__pane-wrapper {
                         overflow-y: auto;
-                        .van-pull-refresh__track{
+
+                        .van-pull-refresh__track {
                             min-height: 40vmax;
                         }
                     }
@@ -440,11 +429,14 @@
                 flex: 1;
                 width: 100%;
                 overflow-y: auto;
-                .video-item{
-                    .van-cell{
-                        padding: 5px;;
+
+                .video-item {
+                    .van-cell {
+                        padding: 5px;
+                        ;
                     }
                 }
+
                 .van-cell__title {
                     font-size: 20px;
                     letter-spacing: 1px;
@@ -452,6 +444,7 @@
                     .flexbox {
                         font-size: .45rem;
                         .flex(@j: space-between; @a: flex-start);
+
                         .right {
                             flex: none;
                             margin-left: 10px;
@@ -462,20 +455,17 @@
 
                 .van-cell__value {
                     font-size: 20px;
-                    ;
                 }
             }
 
             .sendCommentBtn {
+                .flex();
                 box-shadow: none;
                 width: 90%;
-                margin: 10px auto 0;
-                // background: rgb(91, 91, 91);
+                margin: 14px auto 5px;
                 height: 40px;
-                .flex();
-                position: sticky;
-                bottom: 5px;
-
+                // position: sticky;
+                // bottom: 5px;
             }
 
             .list-item {
@@ -490,10 +480,10 @@
 
                 // border: 1px solid gray;
                 .van-swipe-cell {
-                    &:not(:last-child) {
-                        border-bottom: 1px solid rgba(128, 128, 128, 0.279);
+                    // &:not(:last-child) {
+                    border-bottom: 1px solid rgba(128, 128, 128, 0.279);
 
-                    }
+                    // }
                 }
 
                 .van-swipe-cell__right {
@@ -505,9 +495,16 @@
                 }
 
                 .expandBtn {
-                    height: 40px;
+                    height: 35px;
                     .flex();
+
+                    span {
+                        .flex();
+                    }
+
                     color: @j_main_color;
+                    font-size: 12px;
+
                 }
 
                 .comment-item {

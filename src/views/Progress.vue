@@ -31,7 +31,7 @@
                 <van-empty v-if="progressList.length == 0 " description="暂无进度" >
                     <van-button type="info" round plain :to="{path: '/'}">开始学习</van-button>
                 </van-empty>
-                <van-divider v-else>我是有底线的</van-divider>
+                <van-divider v-else>没有更多了</van-divider>
             </main>
         </van-pull-refresh>
     </div>
@@ -111,12 +111,9 @@
                 color: black;
                 list-style: none;
                 padding-left: 20px;
-                ;
-
                 .li-title {
                     .flex(@j: space-between);
                     margin-bottom: 5px;
-                    // border-bottom: 1px solid gray;
                 }
             }
         }

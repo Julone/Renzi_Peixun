@@ -3,7 +3,7 @@
          <van-search
             v-model="key_word"
             show-action
-            placeholder="请输入搜索关键词"
+            placeholder="搜索老师、课程、机构"
             @search="onSearch"
         >
         <template #left> 

@@ -38,14 +38,10 @@ export default {
       }, timeout)
     },
     resetAppParams(){
+      this.$store.dispatch('app_calibrate_time');
+      this.$store.dispatch('checkDebugMode')
       this.$store.commit('set_appHeight',window.innerHeight );
     }
-  },
-  created(){
-    this.$store.dispatch('app_calibrate_time');
-    this.$store.dispatch('checkDebugMode')
-    // this.$store.dispatch('login_getToken');
-    console.log(this.$route);
   },
   mounted(){
     this.$eventBus.$on('triggerScroll', this.triggerScroll);
@@ -64,6 +60,13 @@ export default {
 }
 body{
   overflow: hidden;
+  @media(orientation:landscape){
+    // background: red;
+    padding-left: constant(safe-area-inset-left);
+    padding-left: env(safe-area-inset-left);
+    padding-right: constant(safe-area-inset-right);
+    padding-right: env(safe-area-inset-right);
+  }
 }
 #app{
   width: 100%;
@@ -84,6 +87,7 @@ body{
     }
   }
 }
-
-
+.van-nav-bar{
+    box-shadow: 0px 4px 20px -13px rgba(0, 0, 0, 0.5);
+}
 </style>
