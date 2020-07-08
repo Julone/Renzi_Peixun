@@ -17,5 +17,7 @@
 - `/src/utils/storage.js` 主要用法是，   
     ```javascript
     setStorage({ name !: String, type?: 'session'|'local', content!: Object})
-    
+    ```
+    ```javascript
     getStorage({ name!: String, type?: 'session'|'local'})
+    ```
