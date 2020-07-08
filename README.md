@@ -6,7 +6,7 @@
 >   `/global.darkmode.less` 黑暗CSS模式适配
 >   `/global.variables.less` 全局的less变量
 ## 接口文件
->   `/src/api/api-proxy-page.js` 接口命名规则： [页面]_[方法名] (例如home_getCourseList);
+>   `/src/api/api-proxy-page.js` 接口命名规则： [页面]_[方法名] `(例如home_getCourseList)`
 ## 全局组件
 >   `/src/component/_index.js` 自定义组件
 >   `/src/vant.js` vant组件
