@@ -16,21 +16,22 @@
       <div v-if="isLoading">
           <div class="lunbo-container">
             <div class="lunbo">
-              <van-image width="100%" height="100%"></van-image>
+                <home-img skeleton lunbo height="100%"></home-img>
             </div>
           </div>
             <div class="LoadPanel">
           <van-cell  v-for="el in 3" :key="el" is-link>
             <template #title> <van-skeleton round  title :row="2" /> </template>
-            <van-image radius="0.1rem" width="100%" height="2.2rem"></van-image>
+              <home-img skeleton  height="2.2rem"></home-img>
           </van-cell>
         </div>   
       </div>
       <!-- 轮播图 -->
       <div v-if="!isLoading" class="lunbo-container">
    <van-swipe class="lunbo" :autoplay="5000" indicator-color="white">
-          <van-swipe-item v-for="el in lunboList" @click="onCourseClick(el)" :key="el.id">
-            <img :src="el.rotation_image" width="100%" alt="">
+          <van-swipe-item  v-for="el in lunboList" @click="onCourseClick(el)" :key="el.id">
+            <!-- <img :src="el.rotation_image" width="100%" alt=""> -->
+          <home-img :img="el.rotation_image" height="100%"></home-img>
           </van-swipe-item>
         </van-swipe>
       </div>
@@ -43,11 +44,7 @@
           :title="el.teacher + '-' + el.course_name" :label="el.info" is-link
           @click="onCourseClick(el)">
           <!-- <img v-lazy="el.image" width="100%" :alt="el.course_name"> -->
-          <van-image radius=".1rem" height="2.2rem" width="100%" lazy-load :src="el.image" fit="cover">
-            <template v-slot:loading>
-              <van-loading type="circular" color="#1989fa" size="40" />
-            </template>
-          </van-image>
+          <home-img :img="el.image"></home-img>
         </van-cell>
       </van-list>
       <!-- 空内容  -->
@@ -164,7 +161,7 @@
     .lunbo-container{
          -webkit-appearance:none;
       height: 130px;
-        border-radius: 7px;
+        border-radius: .1rem;
         position: relative;
         width: 100%;
         margin: 0px auto 15px;

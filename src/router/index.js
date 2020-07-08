@@ -67,6 +67,11 @@ const routes = [
     }
   },
   {
+    path: '/feedback',
+    name: 'feedback',
+    component: ()=>import('../views/Feedback.vue')
+  },
+  {
     path: '*',
     name: 'page404',
     component: ()=>import('../views/_Error.vue')

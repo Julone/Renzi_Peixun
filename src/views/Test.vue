@@ -340,6 +340,14 @@
                 justify-content: space-around;
             }
         }
+        /deep/.van-sticky--fixed{
+                padding: 0 10px;
+                box-shadow: 0px 4px 20px -13px rgba(0, 0, 0, 0.5);
+                background: white;
+                @media (prefers-color-scheme: dark) {
+                background: black;
+                }
+        }
 
 
         .submit {

@@ -480,10 +480,9 @@
 
                 // border: 1px solid gray;
                 .van-swipe-cell {
-                    // &:not(:last-child) {
-                    border-bottom: 1px solid rgba(128, 128, 128, 0.279);
-
-                    // }
+                    &:not(:last-child) {
+                        // border-bottom: 1px solid rgba(128, 128, 128, 0.279);
+                    }
                 }
 
                 .van-swipe-cell__right {
@@ -552,6 +551,8 @@
                     &.childNode {
                         // padding-left: 20px;
                         border-left: 5px solid #67cc99;
+                        border-top: 1px solid rgba(128, 128, 128, 0.279);
+
                         // margin-left: 5px;;
                         // &::before {
                         //     content: '';

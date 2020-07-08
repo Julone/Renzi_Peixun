@@ -1,5 +1,5 @@
 <template>
-    <van-swipe-cell>
+    <van-swipe-cell ref="swipe_cell" @open="oepn">
         <div class="comment-item" :class="className">
             <div class="title">
                 <div class="left">
@@ -9,7 +9,8 @@
                     {{el.createAt}}
                 </div>
             </div>
-            <div class="content" @click="openDialog({parentId,parentUserName: parentName})">
+            <div class="content" @click="openSwipeCell">
+                
                 {{el.content}}
             </div>
         </div>
@@ -17,6 +18,22 @@
             <van-button v-if="el.canDel" square text="删除" @click="deleteComment(el.id)" type="danger" />
             <van-button square text="回复" @click="openDialog({parentId,parentUserName: parentName})" type="info" />
         </template>
+
+            <van-popup
+            v-model="showPopup"
+            position="bottom"
+            :style="{ height: '3rem' }"
+            :get-container="()=>this.$root.$el"
+            >
+            <div class="com_item_container">
+                <div class="com_item_wrapper">
+                    <div class="com_btn_item" v-for="el in options" :key="el.name">
+                <van-icon :name="el.icon"></van-icon>
+            </div>
+                </div>
+            </div>
+            
+            </van-popup>
     </van-swipe-cell>
 </template>
 <script>
@@ -25,6 +42,17 @@
     } from 'api'
     export default {
         props: ['el', 'openDialog', 'className', 'parentId', "parentName", "erji", "refreshMethod"],
+        data(){
+            return {
+                showPopup:false,
+                options: [
+                    {name: 'reply',icon:'edit', label: '评论'},
+                    {name: 'delete',icon:'delete', label: '删除'},
+                    {name: 'report',icon:'warn-o', label: '举报'},
+               
+                ]
+            }
+        },
         methods: {
             deleteComment(id) {
                 this.$dialog.confirm({
@@ -38,7 +66,46 @@
                         this.refreshMethod();
                     })
                 }).catch(e => e)
+            },
+            async  openSwipeCell(){
+                // this.$toast('推荐右划进行操作');
+                // this.showPopup = true;
+                this.openDialog({parentId:this.parentId,parentUserName: this.parentName});
+    
+            },
+            oepn(){
+                // console.log(arguments);
             }
+        },
+        mounted(){
         }
     }
 </script>
+<style lang="less">
+.com_item_container{
+    padding: 20px 10px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    .com_item_wrapper{
+        // .flex(@j:flex-start;@w:nowrap);
+        width: auto;
+        white-space: nowrap;
+        .com_btn_item{
+            @size:1.5rem;
+    width: @size;
+    height: @size;
+    border-radius: 100px;
+    flex:none;
+    background: gray;
+    .flex();
+    display: inline-flex;
+    font-size: @size / 3;
+    margin-right: 10px;
+}
+
+    }
+
+}
+
+</style>

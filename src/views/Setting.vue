@@ -56,6 +56,7 @@
         <van-cell title="清除缓存" is-link @click="$store.dispatch('setting_clearCache')">
         </van-cell>
       </van-cell-group>
+      <van-cell title="意见反馈" is-link to="/feedback"></van-cell>
       <van-cell title="退出应用" is-link @click="exitApp"></van-cell>
     </main>
   </div>
