@@ -9,6 +9,7 @@
 >   `/src/api/api-proxy-page.js` 接口命名规则： 页面_方法名 `(例如home_getCourseList)`
 ## 全局组件
 >   `/src/component/_index.js` 自定义组件
+
 >   `/src/vant.js` vant组件
 ## 其他杂项
 - $eventBus的事件挂载于 App.vue
