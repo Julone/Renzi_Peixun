@@ -16,13 +16,13 @@
       <div v-if="isLoading">
           <div class="lunbo-container">
             <div class="lunbo">
-                <home-img skeleton lunbo height="100%"></home-img>
+                <app-image skeleton lunbo height="100%"></app-image>
             </div>
           </div>
             <div class="LoadPanel">
           <van-cell  v-for="el in 3" :key="el" is-link>
             <template #title> <van-skeleton round  title :row="2" /> </template>
-              <home-img skeleton  height="2.2rem"></home-img>
+              <app-image skeleton  height="2.2rem"></app-image>
           </van-cell>
         </div>   
       </div>
@@ -31,7 +31,7 @@
    <van-swipe class="lunbo" :autoplay="5000" indicator-color="white">
           <van-swipe-item  v-for="el in lunboList" @click="onCourseClick(el)" :key="el.id">
             <!-- <img :src="el.rotation_image" width="100%" alt=""> -->
-          <home-img :img="el.rotation_image" height="100%"></home-img>
+          <app-image :img="el.rotation_image" height="100%"></app-image>
           </van-swipe-item>
         </van-swipe>
       </div>
@@ -44,7 +44,7 @@
           :title="el.teacher + '-' + el.course_name" :label="el.info" is-link
           @click="onCourseClick(el)">
           <!-- <img v-lazy="el.image" width="100%" :alt="el.course_name"> -->
-          <home-img :img="el.image"></home-img>
+          <app-image :img="el.image"></app-image>
         </van-cell>
       </van-list>
       <!-- 空内容  -->

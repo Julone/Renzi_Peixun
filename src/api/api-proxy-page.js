@@ -69,7 +69,7 @@ export function test_setTestPageAnswer(data){
         
     })
 }
-export function progress_getUserStudyProgress(userId){
+export function progress_getUserStudyProgress(){
     return axiosByFormData({
         url: baseUrl ,
         method: 'POST',
@@ -131,12 +131,22 @@ export function score_getScoreList(){
         params: {
             serviceName: 'svr-build',
             action: 'getAllAnswerByUserId'
+        }
+    })
+}
+
+export function score_getTestResult(sjId){
+    return axiosByFormData({
+        url: baseUrl,
+        method: 'POST',
+        params: {
+            serviceName: 'svr-build',
+            action: 'getAnswerMxByUserIdAndSjId'
         },
         data: {
-            data: {"userId":1}
+            data: {sjId:sjId}
        }
     })
-    
 }
 export function setting_getUserInfo(){
     return axiosSilent({

@@ -83,8 +83,6 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to,from,next) => {
-  // if (to.name !== 'login' && !store.getters.apptoken) next({ name: 'login' })
-  // else next()
   next();
 })
 router.afterEach((to, from) => {

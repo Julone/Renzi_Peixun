@@ -22,7 +22,7 @@
                             </div>
 
                             <van-cell clickable :title="v.video_name" v-for="(v,index3) in ele.videoRecordList"
-                                :key="index3">
+                                :key="index3" @click="onVideoClick(el,ele,v)">
                                 <span style="float:right">进度: {{v.video_progress}} %</span>
                             </van-cell>
                         </li>
@@ -46,17 +46,16 @@
             return {
                 progressList: [],
                 activeNames: [0],
-                  isLoading: false
-
-
+                isLoading: false
             }
         },
         methods: {
+            onVideoClick(k,c,v){
+                this.$router.push({name: 'videoByVideoId', params: {k_id: k.course_id,c_id: c.chapter_id, v_id: v.video_id} });
+            },
             getUserData() {
                 return progress_getUserStudyProgress(1).then(r => {
-                    console.log(r);
                     this.progressList = r.data.map(el => {
-                        console.log(el);
                         el.chapterRecordList.forEach(element => {
                             element.chapter_progress = (element.chapter_progress).toFixed(2)
                         });
@@ -70,7 +69,6 @@
             },
             onRefresh(){
                 this.getUserData().then(r=>{
-                    
                 }).catch(e=>{
                     this.$toast.fail('刷新失败!')
                 }).finally(()=>{

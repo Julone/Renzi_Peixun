@@ -1,14 +1,14 @@
 import NProgress from 'nprogress'; // progress bar
 import 'nprogress/nprogress.css';
 import Axios from "axios";
-import store from "@/store";
+import store from "./../store";
 import {axios_dataToFormdata,axios_addToken} from '@/utils/utils'
 import {
   Toast,
   Notify,
   Dialog
 } from 'vant';
-import router from '@/router'
+import router from './../router'
 var axiosInitialConfig = {
   timeout: 10000,
   withCredentials: true,
@@ -40,7 +40,6 @@ axiosBase.interceptors.response.use(res => {
   if (errcode != 0 || status != 200) {
     Toast({ message: errmsg, forbidClick: true, duration: 1000 });
     if (errcode == 401 || errcode == 402) {
-      // store.dispatch('login_getToken');
       router.push('/login')
     }
     return Promise.reject(res.data.errmsg);

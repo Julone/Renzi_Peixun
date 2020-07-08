@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import './global/components'
+import './components/_index'
 import './utils/flexible.js'
 import './vant.js'
 Vue.prototype.$eventBus = new Vue();

@@ -33,7 +33,9 @@
                         </van-cell>
                         <van-cell title="课程考试"
                             v-bind='courseInfo.paper != -1 ? { "is-link":true ,to: { name: "test_page", params: {paper_id: courseInfo.paper_id} } }: null'>
-                            <span v-if="courseInfo.paper == -1" @click.stop>该课程已考过</span>
+                            <span v-if="courseInfo.paper == -1" @click.stop>该课程已考过
+                                <van-button size="medium" type="danger" :to='{ name: "test_page", params: {paper_id: courseInfo.paper_id} }'>模拟考试</van-button>
+                            </span>
                             <span v-else style="color:#1989fa">前往考试</span>
                         </van-cell>
                     </div>

@@ -29,7 +29,7 @@ module.exports = {
       }
     },
     chainWebpack:config =>{
-      config.resolve.alias.set('api', resolve('src/global/api-proxy-page.js'))
+      config.resolve.alias.set('api', resolve('src/api/api-proxy-page.js'))
     },
     css: {
       sourceMap: isDevEnv,

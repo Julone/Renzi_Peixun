@@ -30,7 +30,7 @@
                         v-for="el in tm_list" :key="el.id">
                         <div class="form-item" v-if="el.tmType == 'X'">
                             <van-field :name="'radio'+el.id" :rules="[{ required: true, message: '请勾选你的选项' }]">
-                                <test-qt :el="el" slot="label"></test-qt>
+                                <test-question-title :el="el" slot="label"></test-question-title>
                                 <template #input>
                                     <!-- 选择题 -->
                                     <van-radio-group v-model="el.answer">
@@ -50,7 +50,7 @@
                         <div class="form-item" v-if="el.tmType == 'D'">
                             <!-- 多选题 -->
                             <van-field :name="'checkbox'+el.id" :rules="[{ required: true, message: '请勾选你的选项' }]">
-                                <test-qt :el="el" slot="label"></test-qt>
+                                <test-question-title :el="el" slot="label"></test-question-title>
                                 <template #input>
                                     <van-checkbox-group v-model="el.answer">
                                         <van-cell-group>
@@ -70,13 +70,13 @@
                             <van-field v-model="el.answer" rows="2" type="textarea" placeholder="请输入答案(不超过100字)"
                                 show-word-limit autosize clickable :name="'textarea' + el.id"
                                 :rules="[{ validator:textareaValidator, message: '字符过长' },{ required:true, message: '不能为空' }]">
-                                <test-qt :el="el" slot="label"></test-qt>
+                                <test-question-title :el="el" slot="label"></test-question-title>
                             </van-field>
                         </div>
                         <div class="form-item" v-if="el.tmType== 'P'">
                             <!-- 对错题 -->
                             <van-field :name="'duicuo'+el.id" :rules="[{ required: true, message: '请勾选你的选项' }]">
-                                <test-qt :el="el" slot="label"></test-qt>
+                                <test-question-title :el="el" slot="label"></test-question-title>
                                 <template #input>
                                     <van-radio-group v-model="el.answer">
                                         <van-cell>
